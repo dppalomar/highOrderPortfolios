@@ -1,0 +1,37 @@
+Package: MVSKportfolio
+Title: Design of High-Order Portfolios via Mean, Variance, Skewness, and Kurtosis
+Version: 0.0.0.9000
+Date: 2020-5-30
+Description: The classical Markowitz's mean-variance portfolio formulation ignores 
+    heavy tails and skewness. High-order portfolios use higher order moments to
+    better characterize the return distribution. Different formulations and fast 
+    algorithms are proposed for high-order portfolios based on the mean, variance, 
+    skewness, and kurtosis.
+    The package is based on the paper: Zhou and Palomar (2020).
+Authors@R: c(
+  person(c("Daniel", "P."), "Palomar", role = c("cre", "aut"), email = "daniel.p.palomar@gmail.com"),
+  person("Rui", "Zhou", role =  "aut", email = "rzhouae@connect.ust.hk")
+  )
+Maintainer: Daniel P. Palomar <daniel.p.palomar@gmail.com>
+URL: https://github.com/dppalomar/MVSKportfolio
+BugReports: https://github.com/dppalomar/MVSKportfolio/issues
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.0.2
+Depends:
+Imports:
+    mvtnorm,
+    stats
+Suggests:
+    knitr,
+    ggplot2,
+    prettydoc,
+    reshape2,
+    rmarkdown,
+    R.rsp,
+    testthat
+VignetteBuilder:
+    knitr,
+    rmarkdown,
+    R.rsp
