@@ -19,9 +19,9 @@ where \code{beta} can be a vector or a matrix.
 }
 \examples{
 library(MVSKportfolio)
-data(X)
+data(X50)
 
-moments <- estimate_moments_MVSK(X)
+moments <- estimate_moments_MVSK(X50)
 w <- design_MVSK_portfolio(moments)
 
 }

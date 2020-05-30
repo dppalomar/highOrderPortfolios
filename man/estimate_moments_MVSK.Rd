@@ -12,9 +12,9 @@ mean, variance, skewness, and kurtosis.
 }
 \examples{
 library(MVSKportfolio)
-data(X)
+data(X50)
 
-estimate_moments_MVSK(X)
+estimate_moments_MVSK(X50)
 
 }
 \references{
