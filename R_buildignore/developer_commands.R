@@ -11,7 +11,7 @@ install.packages("MVSKportfolio")
 library(MVSKportfolio)
 help(package = "MVSKportfolio")
 package?MVSKportfolio
-?xxxx
+?design_MVSK_portfolio
 citation("MVSKportfolio")
 vignette(package = "MVSKportfolio")
 
