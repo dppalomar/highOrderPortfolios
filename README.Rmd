@@ -10,7 +10,19 @@ output:
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-
+```{r, echo = FALSE}
+library(knitr)
+opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  fig.align = "center",
+  fig.retina = 2,
+  out.width = "75%",
+  dpi = 96
+)
+knit_hooks$set(pngquant = hook_pngquant)
+```
 
 
 
@@ -29,8 +41,7 @@ The classical Markowitz's mean-variance portfolio formulation ignores
 
 ## Installation
 The package can be installed from [CRAN](https://CRAN.R-project.org/package=highOrderPortfolios) or [GitHub](https://github.com/dppalomar/highOrderPortfolios):
-
-```r
+```{r, eval=FALSE}
 # install stable version from CRAN
 install.packages("highOrderPortfolios")
 
@@ -39,28 +50,22 @@ devtools::install_github("dppalomar/highOrderPortfolios")
 ```
 
 To get help:
-
-```r
+```{r, eval = FALSE}
 library(highOrderPortfolios)
 help(package = "highOrderPortfolios")
 ?highOrderPortfolios
 ```
 
 To cite `highOrderPortfolios` in publications:
-
-```r
+```{r, eval = FALSE}
 citation("highOrderPortfolios")
 ```
 
 
 ## Usage
 
-
-```r
+```{r}
 library(highOrderPortfolios)
-#> Registered S3 method overwritten by 'xts':
-#>   method     from
-#>   as.zoo.xts zoo
 data(X50)
 
 # estimate parameters
@@ -77,15 +82,9 @@ sol <- MVSKtilting(d = d, mom_params = params, w_init = w0, w0 = w0, moms0 = mom
 
 # plot
 plot(sol$times, sol$objs, "b")
-```
-
-<img src="man/figures/README-unnamed-chunk-5-1.png" width="75%" style="display: block; margin: auto;" />
-
-```r
 barplot(sol$w)
-```
 
-<img src="man/figures/README-unnamed-chunk-5-2.png" width="75%" style="display: block; margin: auto;" />
+```
 
 
 
