@@ -1,4 +1,4 @@
-#' MVSKportfolio: Design of High-Order Portfolios via Mean, Variance, Skewness, and Kurtosis
+#' highOrderPortfolios: Design of High-Order Portfolios via Mean, Variance, Skewness, and Kurtosis
 #' 
 #' The classical Markowitz's mean-variance portfolio formulation ignores 
 #' heavy tails and skewness. High-order portfolios use higher order moments to
@@ -8,14 +8,14 @@
 #'
 #'
 #' @section Functions:
-#' \code{\link{estimate_moments_MVSK}} and \code{\link{design_MVSK_portfolio}}
+#' \code{\link{MVSK}} and \code{\link{MVSKtilting}}
 #'
 #' @section Help:
 #' For a quick help see the README file:
-#' \href{https://github.com/dppalomar/MVSKportfolio/blob/master/README.md}{GitHub-README}.
+#' \href{https://github.com/dppalomar/highOrderPortfolios/blob/master/README.md}{GitHub-README}.
 #'
 # For more details see the vignette:
-# \href{https://CRAN.R-project.org/package=MVSKportfolio/vignettes/xxx.html}{CRAN-vignette}.
+# \href{https://CRAN.R-project.org/package=highOrderPortfolios/vignettes/xxx.html}{CRAN-vignette}.
 #'
 #' @author Rui Zhou and Daniel P. Palomar
 #'
@@ -24,5 +24,5 @@
 #' under review, 2020.
 #'
 #' @docType package
-#' @name MVSKportfolio-package
+#' @name highOrderPortfolios-package
 NULL

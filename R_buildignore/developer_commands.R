@@ -4,16 +4,16 @@
 # Local installation
 install.packages(file.choose(), repos = NULL, type = "source")
 # Installation from GitHub
-devtools::install_github("dppalomar/MVSKportfolio")
+devtools::install_github("dppalomar/highOrderPortfolios")
 # Installation from CRAN
-install.packages("MVSKportfolio")
+install.packages("highOrderPortfolios")
 # Getting help
-library(MVSKportfolio)
-help(package = "MVSKportfolio")
-package?MVSKportfolio
-?design_MVSK_portfolio
-citation("MVSKportfolio")
-vignette(package = "MVSKportfolio")
+library(highOrderPortfolios)
+help(package = "highOrderPortfolios")
+package?highOrderPortfolios
+?MVSK
+citation("highOrderPortfolios")
+vignette(package = "highOrderPortfolios")
 
 
 ##
@@ -21,8 +21,8 @@ vignette(package = "MVSKportfolio")
 ##
 devtools::load_all()  #or Ctrl-Shift-L
 devtools::document()  #to generate all documentation via roxygen
-devtools::install()
-library(MVSKportfolio)
+devtools::install(dependencies = FALSE)
+library(highOrderPortfolios)
 
 
 # Code tests
@@ -35,9 +35,9 @@ devtools::test()
 devtools::check()  # run_dont_test = TRUE
 rcmdcheck::rcmdcheck()  # build_args = "--run-donttest"
 devtools::build()
-#devtools::revdep(pkg = "MVSKportfolio")  # to check reverse dependencies
+#devtools::revdep(pkg = "highOrderPortfolios")  # to check reverse dependencies
 #devtools::check_win_release()  #to check under windows
 #R CMD build .  # this is to generate tarball
-#R CMD check MVSKportfolio_0.0.1.tar.gz --as-cran --run-donttest  # this is before submission to CRAN
-#R CMD install MVSKportfolio_0.0.1.tar.gz
+#R CMD check highOrderPortfolios_0.0.1.tar.gz --as-cran --run-donttest  # this is before submission to CRAN
+#R CMD install highOrderPortfolios_0.0.1.tar.gz
 #submit the tarball directly via the webform: https://cran.r-project.org/submit.html

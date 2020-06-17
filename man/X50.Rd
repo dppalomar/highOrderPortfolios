@@ -3,13 +3,13 @@
 \docType{data}
 \name{X50}
 \alias{X50}
-\title{Synthetic 300x50 matrix dataset}
-\format{An object of class \code{xts} (inherits from \code{zoo}) with 503 rows and 50 columns.}
+\title{Synthetic 250x50 matrix dataset}
+\format{An object of class \code{matrix} with 250 rows and 50 columns.}
 \usage{
 data(X50)
 }
 \description{
-Synthetic 300x50 matrix dataset containing 300 realizations
+Synthetic 250x50 matrix dataset containing 250 realizations
 of 50 variables.
 }
 \keyword{dataset}
