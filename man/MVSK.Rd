@@ -4,10 +4,20 @@
 \alias{MVSK}
 \title{Design high-order portfolio based on weighted linear combination of first four moments}
 \usage{
-MVSK(lmd = rep(1, 4), mom_params, w_init = rep(1/length(mom_params$mu),
-  length(mom_params$mu)), leverage = 1, method = c("Q-MVSK", "MM",
-  "DC"), tau_w = 0, gamma = 1, zeta = 1e-08, maxiter = 100,
-  ftol = 1e-05, wtol = 1e-04, stopval = -Inf)
+MVSK(
+  lmd = rep(1, 4),
+  mom_params,
+  w_init = rep(1/length(mom_params$mu), length(mom_params$mu)),
+  leverage = 1,
+  method = c("Q-MVSK", "MM", "DC"),
+  tau_w = 0,
+  gamma = 1,
+  zeta = 1e-08,
+  maxiter = 100,
+  ftol = 1e-05,
+  wtol = 1e-04,
+  stopval = -Inf
+)
 }
 \arguments{
 \item{lmd}{a numerical vector of length 4, indicating the weights of first four moments.}

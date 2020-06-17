@@ -4,12 +4,25 @@
 \alias{MVSKtilting}
 \title{Design high-order portfolio by tilting a given portfolio to the MVSK efficient frontier}
 \usage{
-MVSKtilting(d = rep(1, 4), mom_params,
+MVSKtilting(
+  d = rep(1, 4),
+  mom_params,
   w_init = rep(1/length(mom_params$mu), length(mom_params$mu)),
-  w0 = w_init, moms0 = NULL, leverage = 1, kappa = 0,
-  method = c("Q-MVSKT", "L-MVSKT"), tau_w = 1e-05, tau_delta = 1e-05,
-  gamma = 1, zeta = 1e-08, maxiter = 100, ftol = 1e-05,
-  wtol = 1e-05, theta = 0.5, stopval = -Inf)
+  w0 = w_init,
+  moms0 = NULL,
+  leverage = 1,
+  kappa = 0,
+  method = c("Q-MVSKT", "L-MVSKT"),
+  tau_w = 1e-05,
+  tau_delta = 1e-05,
+  gamma = 1,
+  zeta = 1e-08,
+  maxiter = 100,
+  ftol = 1e-05,
+  wtol = 1e-05,
+  theta = 0.5,
+  stopval = -Inf
+)
 }
 \arguments{
 \item{d}{a numerical vector of length 4, indicating the tilting direction of first four moments.}
