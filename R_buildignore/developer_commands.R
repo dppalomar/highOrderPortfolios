@@ -21,6 +21,7 @@ vignette(package = "highOrderPortfolios")
 ##
 devtools::load_all()  #or Ctrl-Shift-L
 devtools::document()  #to generate all documentation via roxygen
+devtools::install()
 devtools::install(dependencies = FALSE)
 library(highOrderPortfolios)
 
