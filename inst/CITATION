@@ -1,0 +1,33 @@
+citHeader("To cite 'highOrderPortfolios' in publications, please use:")
+
+citEntry(entry = "Manual",
+         title        = "{highOrderPortfolios: Design of High-Order Portfolios via Mean, Variance, Skewness, and Kurtosis}",
+         author       = personList(as.person("Rui ZHOU"),
+                                   as.person("D. P. Palomar")),
+         note         = "R package version 0.0.1",
+         year         = "2020",
+         url          = "https://CRAN.R-project.org/package=highOrderPortfolios",
+         textVersion  =
+           paste("Rui Zhou and D. P. Palomar (2020).",
+                 "highOrderPortfolios: Design of High-Order Portfolios via Mean, Variance, Skewness, and Kurtosis.",
+                 "R package version 0.0.1.",
+                 "https://CRAN.R-project.org/package=highOrderPortfolios")
+)
+
+citEntry(entry = "Article",
+         title        = "Solving High-Order Portfolios via Successive Convex Approximation Algorithms",
+         author       = personList(as.person("Rui ZHOU"),
+                                   as.person("D. P. Palomar")),
+         journal      = "under review",
+         volume       = "",
+         number       = "",
+         pages        = "",
+         year         = "2020",
+         url          = "https://doi.org/10.1109/???????",
+         textVersion  =
+           paste("Rui Zhou and D. P. Palomar (2020).",
+                 "Solving High-Order Portfolios via Successive Convex Approximation Algorithms.",
+                 "under review,",
+                 "",
+                 "https://doi.org/10.1109/???????")
+)
