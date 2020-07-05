@@ -8,7 +8,7 @@
 #'
 #'
 #' @section Functions:
-#' \code{\link{MVSK}} and \code{\link{MVSKtilting}}
+#' \code{\link{design_MVSK_portfolio}} and \code{\link{design_MVSKtilting_portfolio}}
 #'
 #' @section Help:
 #' For a quick help see the README file:

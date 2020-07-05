@@ -5,7 +5,7 @@ require(magrittr)
 data(X50)
 
 # estimate moment parameters
-mom_params <- estMomParams(X50)
+mom_params <- estimate_moments(X50)
 
 # lambda, moment weights
 xi <- 10
@@ -15,15 +15,15 @@ sol_nloptr_MVSK <- highOrderPortfolios:::.MVSKnloptr(lmd = lmd, mom_params = mom
 stopval <- sol_nloptr_MVSK$obj
 
 # portfolio optimization
-sol_SCA_MVSK <- MVSK(lmd = lmd, mom_params = mom_params, ftol = 1e-6, wtol = 1e-6, method = "Q-MVSK", stopval = stopval)
-sol_MM_MVSK  <- MVSK(lmd = lmd, mom_params = mom_params, method = "MM", maxiter = 2e2)
-sol_DC_MVSK  <- MVSK(lmd = lmd, mom_params = mom_params, method = "DC", ftol = -1, wtol = -1, maxiter = 2e2)
+sol_SCA_MVSK <- design_MVSK_portfolio(lmd = lmd, X_moments = mom_params, ftol = 1e-6, wtol = 1e-6, method = "Q-MVSK", stopval = stopval)
+sol_MM_MVSK  <- design_MVSK_portfolio(lmd = lmd, X_moments = mom_params, method = "MM", maxiter = 2e2)
+sol_DC_MVSK  <- design_MVSK_portfolio(lmd = lmd, X_moments = mom_params, method = "DC", ftol = -1, wtol = -1, maxiter = 2e2)
 
 require(ggplot2)
 objs <- rbind(
-  data.frame("times" = sol_DC_MVSK$times,  "objective" = sol_DC_MVSK$objs,  "alg" = "DC"),
-  data.frame("times" = sol_MM_MVSK$times,  "objective" = sol_MM_MVSK$objs,  "alg" = "MM"),
-  data.frame("times" = sol_SCA_MVSK$times, "objective" = sol_SCA_MVSK$objs, "alg" = "Q-MVSK"),
+  data.frame("times" = sol_DC_MVSK$cpu_time,  "objective" = sol_DC_MVSK$objs,  "alg" = "DC"),
+  data.frame("times" = sol_MM_MVSK$cpu_time,  "objective" = sol_MM_MVSK$objs,  "alg" = "MM"),
+  data.frame("times" = sol_SCA_MVSK$cpu_time, "objective" = sol_SCA_MVSK$objs, "alg" = "Q-MVSK"),
   data.frame("times" = sol_nloptr_MVSK$time, "objective" = sol_nloptr_MVSK$obj, "alg" = "nloptr")
 )
 ggplot(objs, aes(x = times, y = objective, color = alg, shape = alg)) +
@@ -40,3 +40,21 @@ ggplot(objs, aes(x = times, y = objective, color = alg, shape = alg)) +
         legend.text = element_text(size = 12),
         axis.title.y = element_text(size = 12),
         axis.text.y = element_text(size = 8))
+
+
+
+library(highOrderPortfolios)
+data(X50)
+
+# estimate moments
+X_moments <- estimate_moments(X50[, 1:10])
+
+# decide moment weights
+xi <- 10
+lmd <- c(1, xi/2, xi*(xi+1)/6, xi*(xi+1)*(xi+2)/24)
+
+# portfolio optimization
+sol <- design_MVSK_portfolio(lmd, X_moments)
+sol
+
+save(sol, file = "R_buildignore/mvsk_sanity.RData")

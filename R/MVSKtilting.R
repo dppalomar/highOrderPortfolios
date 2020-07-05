@@ -58,7 +58,8 @@
 #' kappa <- sqrt(w0%*%X_moments$Sgm%*%w0) * 0.3
 #' 
 #' # portfolio optimization
-#' sol <- design_MVSKtilting_portfolio(d, X_moments, w_init = w0, w0 = w0, w0_moments = w0_moments, kappa = kappa)
+#' sol <- design_MVSKtilting_portfolio(d, X_moments, w_init = w0, w0 = w0, 
+#'                                     w0_moments = w0_moments, kappa = kappa)
 #' }
 #' 
 #' @importFrom utils tail
@@ -91,7 +92,7 @@ design_MVSKtilting_portfolio <- function(d = rep(1, 4), X_moments,
   N <- length(mu)
   w <- w_init
   delta <- 0
-  if (is.null(w0_moments)) w0_moments <- evalMoms(w = w, X_moments = X_moments)
+  if (is.null(w0_moments)) w0_moments <- eval_portfolio_moments(w = w, X_moments = X_moments)
   
   cpu_time <- c(0)
   objs <- c()  
@@ -124,22 +125,19 @@ design_MVSKtilting_portfolio <- function(d = rep(1, 4), X_moments,
   
   
   start_time <- proc.time()[3]
+  
+  # compute current gradient and objective
+  H3 <- 6 * sapply(Phi_shred, function(x) x%*%w)
+  H4 <- 4 * sapply(Psi_shred, function(x) PerformanceAnalytics:::derportm3(w, x))
+  grads <- rbind(mu, 2*w%*%Sgm, w%*%H3/2, w%*%H4/3)
+  moms <- as.vector(grads %*% w) / c(1, 2, 3, 4)
+  objs <- c(objs, obj())
+  
   # SCA outer loop
   for (iter in 1:maxiter) {
     
     # record previous w and delta
     w_old <- w; delta_old <- delta
-    
-    # Hessian matrix
-    H3 <- 6 * sapply(Phi_shred, function(x) x%*%w)
-    H4 <- 4 * sapply(Psi_shred, function(x) PerformanceAnalytics:::derportm3(w, x))
-    
-    
-    # recovery gradients from Hessian information
-    grads <- rbind(mu, 2*w%*%Sgm, w%*%H3/2, w%*%H4/3)
-    moms <- as.vector(grads %*% w) / c(1, 2, 3, 4)
-    
-    objs <- c(objs, obj())
     
     # browser()
     # compute eta for enlarging the feasible set of approximating problem
@@ -282,21 +280,25 @@ design_MVSKtilting_portfolio <- function(d = rep(1, 4), X_moments,
     # recording ...
     cpu_time <- c(cpu_time, proc.time()[3] - start_time) 
     
+    
+    # Hessian matrix
+    H3 <- 6 * sapply(Phi_shred, function(x) x%*%w)
+    H4 <- 4 * sapply(Psi_shred, function(x) PerformanceAnalytics:::derportm3(w, x))
+    
+    # recovery gradients from Hessian information
+    grads <- rbind(mu, 2*w%*%Sgm, w%*%H3/2, w%*%H4/3)
+    moms <- as.vector(grads %*% w) / c(1, 2, 3, 4)
+    
+    objs <- c(objs, obj())
+    
     # judge convergence
     # has_w_converged <- all(abs(w - w_old) <= .5 * wtol )
     has_w_converged <- norm(w - w_old, "2") <= wtol * norm(w_old, "2")
-    if (length(objs) >= 2)
-      has_f_converged <- abs(diff(tail(objs, 2))) <= ftol * abs(tail(objs, 1))
-    else 
-      has_f_converged <- FALSE
+    has_f_converged <- abs(diff(tail(objs, 2))) <= ftol * abs(tail(objs, 1))
     has_cross_stopval <- tail(objs, 1) <= stopval
     
     if (has_w_converged || has_f_converged || has_cross_stopval) break
   }
-  
-  grads <- getgrad(w)
-  moms <- as.vector(grads %*% w) / c(1, 2, 3, 4)
-  objs <- c(objs, obj())  # for recording
   
   return(list(
     "w"           = w,

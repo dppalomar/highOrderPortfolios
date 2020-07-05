@@ -13,7 +13,7 @@
 #'
 #' @param X a data matrix
 #' @param adjust_magnitude a boolean variable, indicating whether to adjust the order of magnitude of parameters.
-#'                         NOTE: It is specially designed for \code{\link{MVSKtilting}} function.
+#'                         NOTE: It is specially designed for \code{\link{design_MVSKtilting_portfolio}} function.
 #'                    
 #' @return A list containing the following elements:
 #' \item{\code{mu}}{mean vector.}

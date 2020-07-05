@@ -10,7 +10,7 @@ estimate_moments(X, adjust_magnitude = FALSE)
 \item{X}{a data matrix}
 
 \item{adjust_magnitude}{a boolean variable, indicating whether to adjust the order of magnitude of parameters.
-NOTE: It is specially designed for \code{\link{MVSKtilting}} function.}
+NOTE: It is specially designed for \code{\link{design_MVSKtilting_portfolio}} function.}
 }
 \value{
 A list containing the following elements:

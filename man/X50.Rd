@@ -5,7 +5,7 @@
 \alias{X50}
 \title{Synthetic 250x50 matrix dataset}
 \format{
-An object of class \code{matrix} (inherits from \code{array}) with 250 rows and 50 columns.
+An object of class \code{matrix} with 250 rows and 50 columns.
 }
 \usage{
 data(X50)

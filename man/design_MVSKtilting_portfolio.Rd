@@ -95,7 +95,8 @@ d <- abs(w0_moments)
 kappa <- sqrt(w0\%*\%X_moments$Sgm\%*\%w0) * 0.3
 
 # portfolio optimization
-sol <- design_MVSKtilting_portfolio(d, X_moments, w_init = w0, w0 = w0, w0_moments = w0_moments, kappa = kappa)
+sol <- design_MVSKtilting_portfolio(d, X_moments, w_init = w0, w0 = w0, 
+                                    w0_moments = w0_moments, kappa = kappa)
 }
 
 }

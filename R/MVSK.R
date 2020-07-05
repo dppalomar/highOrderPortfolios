@@ -91,22 +91,18 @@ design_MVSK_portfolio <- function(lmd = rep(1, 4), X_moments,
   # browser()
   start_time <- proc.time()[3]
   
+  # compute current gradient and objective
+  H3 <- 6 * sapply(Phi_shred, function(x) x%*%w)
+  H4 <- 4 * sapply(Psi_shred, function(x) PerformanceAnalytics:::derportm3(w, x))
+  H34 <- - lmd[3] * H3 + lmd[4] * H4
+  grads <- rbind(mu, 2*w%*%Sgm, w%*%H3/2, w%*%H4/3)
+  objs <- c(objs, obj())
+  
   # SCA outer loop
   for (iter in 1:maxiter) {
     
     # record previous w
     w_old <- w
-    
-    # Hessian matrix
-    H3 <- 6 * sapply(Phi_shred, function(x) x%*%w)
-    H4 <- 4 * sapply(Psi_shred, function(x) PerformanceAnalytics:::derportm3(w, x))
-    H34 <- - lmd[3] * H3 + lmd[4] * H4
-    
-    # recovery gradients from Hessian information
-    grads <- rbind(mu, 2*w%*%Sgm, w%*%H3/2, w%*%H4/3)
-    
-    # record previous objective
-    objs <- c(objs, obj())
     
     ## construct QP approximation problem (the symbol and scale is adjusted to match the format of solver quadprog::solve.QP)
     if (method == "Q-MVSK") {  # method == "Q-MVSK
@@ -136,21 +132,26 @@ design_MVSK_portfolio <- function(lmd = rep(1, 4), X_moments,
     # recording ...
     cpu_time <- c(cpu_time, proc.time()[3] - start_time) 
     
+    # Hessian matrix
+    H3 <- 6 * sapply(Phi_shred, function(x) x%*%w)
+    H4 <- 4 * sapply(Psi_shred, function(x) PerformanceAnalytics:::derportm3(w, x))
+    H34 <- - lmd[3] * H3 + lmd[4] * H4
+    
+    # recovery gradients from Hessian information
+    grads <- rbind(mu, 2*w%*%Sgm, w%*%H3/2, w%*%H4/3)
+    
+    # record current objective
+    objs <- c(objs, obj())
+    
     # judge convergence
     # has_w_converged <- all(abs(w - w_old) <= .5 * wtol )
     # has_w_converged <- norm(w - w_old, "2") <= wtol * norm(w_old, "2")
     has_w_converged <- all(abs(w - w_old) <= .5 * wtol * (abs(w) + abs(w_old)))
-    if (length(objs) >= 2)
-      #has_f_converged <- abs(diff(tail(objs, 2))) <= ftol * abs(tail(objs, 1))
-      has_f_converged <- abs(diff(tail(objs, 2))) <= .5 * ftol * sum(abs(tail(objs, 2)))
-    else 
-      has_f_converged <- FALSE
+    has_f_converged <- abs(diff(tail(objs, 2))) <= .5 * ftol * sum(abs(tail(objs, 2)))
     has_cross_stopval <- tail(objs, 1) <= stopval
     
     if (has_w_converged || has_f_converged || has_cross_stopval) break
   }
-  grads <- getgrad(w)
-  objs <- c(objs, obj())  # for recording
   
   return(list(
     "w"           = w,
