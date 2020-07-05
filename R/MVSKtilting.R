@@ -19,10 +19,10 @@
 #' under review, 2020.
 #' 
 #' @param d a numerical vector of length 4, indicating the tilting direction of first four moments.
-#' @param mom_params a list of moment parameters, see \code{\link{estMomParams}}.
+#' @param X_moments a list of moment parameters, see \code{\link{estimate_moments}}.
 #' @param w_init a numerical vector, indicating the initial value of portfolio weights.
 #' @param w0 a numerical vector, indicating the reference portfolio vector.
-#' @param moms0 a numerical vector, indicating the reference moments. 
+#' @param w0_moments a numerical vector, indicating the reference moments. 
 #' @param leverage a number (>= 1), indicating the leverage of portfolio.
 #' @param kappa a number, indicating the maximum tracking error volatility. 
 #' @param method a string, indicating the algorithm method, must be one of: "Q-MVSK", "MM", "DC".
@@ -38,7 +38,7 @@
 #' 
 #' @return A list containing the following elements:
 #' \item{\code{w}}{Optimal portfolio vector.}
-#' \item{\code{times}}{Time usage with iteration.}
+#' \item{\code{cpu_time}}{Time usage with iteration.}
 #' \item{\code{objs}}{Function objective with iteration.}
 #' \item{\code{convergence}}{Bloolean flag to indicate whether or not the optimization converged.}
 #' \item{\code{moments}}{Moments of portfolio return at optimal portfolio weights.}
@@ -48,17 +48,17 @@
 #' library(highOrderPortfolios)
 #' data(X50)
 #' 
-#' # estimate parameters
-#' params <- estMomParams(X50, align_order = TRUE)
+#' # estimate moments
+#' X_moments <- estimate_moments(X50)
 #' 
 #' # decide problem setting
 #' w0 <- rep(1/50, 50)
-#' moms0 <- evalMoms(w = w0, mom_params = params)
-#' d <- abs(moms0) 
-#' kappa <- sqrt(w0%*%params$Sgm%*%w0) * 0.3
+#' w0_moments <- eval_portfolio_moments(w0, X_moments)
+#' d <- abs(w0_moments) 
+#' kappa <- sqrt(w0%*%X_moments$Sgm%*%w0) * 0.3
 #' 
 #' # portfolio optimization
-#' sol <- MVSKtilting(d = d, mom_params = params, w_init = w0, w0 = w0, moms0 = moms0, kappa = kappa)
+#' sol <- design_MVSKtilting_portfolio(d, X_moments, w_init = w0, w0 = w0, w0_moments = w0_moments, kappa = kappa)
 #' }
 #' 
 #' @importFrom utils tail
@@ -67,10 +67,12 @@
 #' @import lpSolveAPI
 #' @import ECOSolveR
 #' @export
-#' 
-MVSKtilting <- function(d = rep(1, 4), mom_params, w_init = rep(1/length(mom_params$mu), length(mom_params$mu)), w0 = w_init, moms0 = NULL, leverage = 1, kappa = 0, method = c("Q-MVSKT", "L-MVSKT"),
-                        tau_w = 1e-5, tau_delta = 1e-5, gamma = 1, zeta = 1e-8, maxiter = 1e2, ftol = 1e-5, wtol = 1e-5, theta = 0.5, stopval = -Inf) {
-  
+design_MVSKtilting_portfolio <- function(d = rep(1, 4), X_moments, 
+                                         w_init = rep(1/length(X_moments$mu), length(X_moments$mu)), 
+                                         w0 = w_init, w0_moments = NULL, 
+                                         leverage = 1, kappa = 0, method = c("Q-MVSKT", "L-MVSKT"),
+                                         tau_w = 1e-5, tau_delta = 1e-5, gamma = 1, zeta = 1e-8, maxiter = 1e2, ftol = 1e-5, wtol = 1e-5, 
+                                         theta = 0.5, stopval = -Inf) {
   # error control
   if (leverage < 1) stop("leverage must be no less than 1.")
   if (leverage != 1) stop("Support for leverage > 1 is coming in next version.")
@@ -79,22 +81,22 @@ MVSKtilting <- function(d = rep(1, 4), mom_params, w_init = rep(1/length(mom_par
   method <- match.arg(method)
   
   # extract moment parameters
-  mu  <- mom_params$mu
-  Sgm <- mom_params$Sgm
-  Phi <- mom_params$Phi
-  Psi <- mom_params$Psi
-  Phi_shred <- mom_params$Phi_shred
-  Psi_shred <- mom_params$Psi_shred
+  mu  <- X_moments$mu
+  Sgm <- X_moments$Sgm
+  Phi <- X_moments$Phi
+  Psi <- X_moments$Psi
+  Phi_shred <- X_moments$Phi_shred
+  Psi_shred <- X_moments$Psi_shred
   
   N <- length(mu)
   w <- w_init
   delta <- 0
-  if (is.null(moms0)) moms0 <- evalMoms(w = w, mom_params = mom_params)
+  if (is.null(w0_moments)) w0_moments <- evalMoms(w = w, X_moments = X_moments)
   
-  times <- c(0)
+  cpu_time <- c(0)
   objs <- c()  
   getgrad <- function(w) rbind(mu, 2*w%*%Sgm, as.vector(PerformanceAnalytics:::derportm3(w, Phi)), as.vector(PerformanceAnalytics:::derportm4(w, Psi)))  # gradients computing function
-  obj <- function() - min((moms - moms0) / d * c(1, -1, 1, -1))  # objective computing function, grads must be prepared before
+  obj <- function() - min((moms - w0_moments) / d * c(1, -1, 1, -1))  # objective computing function, grads must be prepared before
   
   # browser()
   # when method is "MM" or "DC"
@@ -146,7 +148,7 @@ MVSKtilting <- function(d = rep(1, 4), mom_params, w_init = rep(1/length(mom_par
       tmp3 <- .apprxHessian(-H3, TRUE); tmp4 <- .apprxHessian(H4, TRUE)
       L3 <- tmp3$L; L4 <- tmp4$L; H3_app <- tmp3$hsn; H4_app <- tmp4$hsn
       # browser()
-      gk <- (moms - moms0) * c(-1, 1, -1, 1) + delta * d  
+      gk <- (moms - w0_moments) * c(-1, 1, -1, 1) + delta * d  
       if (all(gk[3:4] <= 0)) {  # only g_3 and g_4 need approximation
         eta <- 0
       } else {
@@ -158,12 +160,12 @@ MVSKtilting <- function(d = rep(1, 4), mom_params, w_init = rep(1/length(mom_par
         hRef <- tmpRef$h
         
         # first moment (g_1) constraint
-        h1 = - moms0[1]  
+        h1 = - w0_moments[1]  
         G1 <- rbind(c(-mu, d[1], 0))
         
         # second moment (g_2) constraint
         tmp2 <- .QCQP2SOCP(q = c(rep(0, N), d[2], 0),
-                           l = - moms0[2],
+                           l = - w0_moments[2],
                            L = rbind(rbind(L2, 0), 0))
         G2 <- tmp2$G
         h2 <- tmp2$h
@@ -193,7 +195,7 @@ MVSKtilting <- function(d = rep(1, 4), mom_params, w_init = rep(1/length(mom_par
     }
     if (method == "L-MVSKT") {
       f.con <- cbind(rbind(-2 * as.numeric((w-w0)%*%Sgm), grads * c(1, -1, 1, -1)), c(0, -d))
-      gk <- c((w-w0)%*%Sgm%*%(w-w0) - kappa^2, (moms - moms0) * c(-1, 1, -1, 1) + delta * d) 
+      gk <- c((w-w0)%*%Sgm%*%(w-w0) - kappa^2, (moms - w0_moments) * c(-1, 1, -1, 1) + delta * d) 
       f.rhs <- gk + f.con%*%c(w, delta)
       if ( all(gk <= 0) ) {
         eta <- 0
@@ -228,12 +230,12 @@ MVSKtilting <- function(d = rep(1, 4), mom_params, w_init = rep(1/length(mom_par
       hRef <- tmpRef$h
       
       # first moment (g_1) constraint
-      h1 = - moms0[1]  
+      h1 = - w0_moments[1]  
       G1 <- rbind(c(-mu, d[1], 0))
       
       # second moment (g_2) constraint
       tmp2 <- .QCQP2SOCP(q = c(rep(0, N), d[2], 0),
-                         l = - moms0[2],
+                         l = - w0_moments[2],
                          L = rbind(rbind(L2, 0), 0))
       G2 <- tmp2$G
       h2 <- tmp2$h
@@ -278,7 +280,7 @@ MVSKtilting <- function(d = rep(1, 4), mom_params, w_init = rep(1/length(mom_par
     gamma <- gamma * (1 - zeta * gamma)
     
     # recording ...
-    times <- c(times, proc.time()[3] - start_time) 
+    cpu_time <- c(cpu_time, proc.time()[3] - start_time) 
     
     # judge convergence
     # has_w_converged <- all(abs(w - w_old) <= .5 * wtol )
@@ -299,11 +301,11 @@ MVSKtilting <- function(d = rep(1, 4), mom_params, w_init = rep(1/length(mom_par
   return(list(
     "w"           = w,
     "delta"       = delta,
-    "times"       = times,
+    "cpu_time"    = cpu_time,
     "objs"        = objs,
     "convergence" = !(iter == maxiter),
     "moments"     = moms,
-    "improve"     = (moms - moms0) / d * c(1, -1, 1, -1)
+    "improve"     = (moms - w0_moments) / d * c(1, -1, 1, -1)
   ))
   
   browser()

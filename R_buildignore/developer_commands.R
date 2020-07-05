@@ -11,7 +11,7 @@ install.packages("highOrderPortfolios")
 library(highOrderPortfolios)
 help(package = "highOrderPortfolios")
 package?highOrderPortfolios
-?MVSK
+?design_MVSK_portfolio
 citation("highOrderPortfolios")
 vignette(package = "highOrderPortfolios")
 

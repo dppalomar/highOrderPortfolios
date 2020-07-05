@@ -15,7 +15,7 @@
 #' under review, 2020.
 #' 
 #' @param lmd a numerical vector of length 4, indicating the weights of first four moments.
-#' @param mom_params a list of moment parameters, see \code{\link{estMomParams}}.
+#' @param X_moments a list of moment parameters, see \code{\link{estimate_moments}}.
 #' @param w_init a numerical vector, indicating the initial value of portfolio weights.
 #' @param leverage a number (>= 1), indicating the leverage of portfolio.
 #' @param method a string, indicating the algorithm method, must be one of: "Q-MVSK", "MM", "DC".
@@ -29,7 +29,7 @@
 #' 
 #' @return A list containing the following elements:
 #' \item{\code{w}}{Optimal portfolio vector.}
-#' \item{\code{times}}{Time usage with iteration.}
+#' \item{\code{cpu_time}}{Time usage with iteration.}
 #' \item{\code{objs}}{Function objective with iteration.}
 #' \item{\code{convergence}}{Bloolean flag to indicate whether or not the optimization converged.}
 #' \item{\code{moments}}{Moments of portfolio return at optimal portfolio weights.}
@@ -39,22 +39,24 @@
 #' library(highOrderPortfolios)
 #' data(X50)
 #' 
-#' # estimate parameters
-#' params <- estMomParams(X50)
+#' # estimate moments
+#' X_moments <- estimate_moments(X50)
 #' 
 #' # decide moment weights
 #' xi <- 10
 #' lmd <- c(1, xi/2, xi*(xi+1)/6, xi*(xi+1)*(xi+2)/24)
 #' 
 #' # portfolio optimization
-#' sol <- MVSK(lmd = lmd, mom_params = params)
+#' sol <- design_MVSK_portfolio(lmd, X_moments)
 #' }
 #' 
 #' @import PerformanceAnalytics
 #' @importFrom utils tail
 #' @export
-MVSK <- function(lmd = rep(1, 4), mom_params, w_init = rep(1/length(mom_params$mu), length(mom_params$mu)), leverage = 1, method = c("Q-MVSK", "MM", "DC"),
-                 tau_w = 0, gamma = 1, zeta = 1e-8, maxiter = 1e2, ftol = 1e-5, wtol = 1e-4, stopval = -Inf) {
+design_MVSK_portfolio <- function(lmd = rep(1, 4), X_moments, 
+                                  w_init = rep(1/length(X_moments$mu), length(X_moments$mu)), 
+                                  leverage = 1, method = c("Q-MVSK", "MM", "DC"),
+                                  tau_w = 0, gamma = 1, zeta = 1e-8, maxiter = 1e2, ftol = 1e-5, wtol = 1e-4, stopval = -Inf) {
   # error control
   if (leverage < 1) stop("leverage must be no less than 1.")
   if (leverage != 1) stop("Support for leverage > 1 is coming in next version.")
@@ -64,12 +66,12 @@ MVSK <- function(lmd = rep(1, 4), mom_params, w_init = rep(1/length(mom_params$m
   if (method != "Q-MVSK") {gamma = 1; zeta = 0}
   
   # extract moment parameters
-  mu  <- mom_params$mu
-  Sgm <- mom_params$Sgm
-  Phi <- mom_params$Phi
-  Psi <- mom_params$Psi
-  Phi_shred <- mom_params$Phi_shred
-  Psi_shred <- mom_params$Psi_shred
+  mu  <- X_moments$mu
+  Sgm <- X_moments$Sgm
+  Phi <- X_moments$Phi
+  Psi <- X_moments$Psi
+  Phi_shred <- X_moments$Phi_shred
+  Psi_shred <- X_moments$Psi_shred
   
   # browser()
   N <- length(mu)
@@ -77,7 +79,7 @@ MVSK <- function(lmd = rep(1, 4), mom_params, w_init = rep(1/length(mom_params$m
   bvec <- cbind(c(1, rep(0, N)))
   w <- w_init
   
-  times <- c(0)
+  cpu_time <- c(0)
   objs  <- c() 
   getgrad <- function(w) rbind(mu, 2*w%*%Sgm, as.vector(PerformanceAnalytics:::derportm3(w, Phi)), as.vector(PerformanceAnalytics:::derportm4(w, Psi)))  # gradients computing function
   obj <- function() sum(lmd * as.vector(grads %*% w) / c(-1, 2, -3, 4))  # objective computing function, grads must be prepared before
@@ -132,26 +134,27 @@ MVSK <- function(lmd = rep(1, 4), mom_params, w_init = rep(1/length(mom_params$m
     gamma <- gamma * (1 - zeta * gamma)
     
     # recording ...
-    times <- c(times, proc.time()[3] - start_time) 
+    cpu_time <- c(cpu_time, proc.time()[3] - start_time) 
     
     # judge convergence
     # has_w_converged <- all(abs(w - w_old) <= .5 * wtol )
-    has_w_converged <- norm(w - w_old, "2") <= wtol * norm(w_old, "2")
+    # has_w_converged <- norm(w - w_old, "2") <= wtol * norm(w_old, "2")
+    has_w_converged <- all(abs(w - w_old) <= .5 * wtol * (abs(w) + abs(w_old)))
     if (length(objs) >= 2)
-      has_f_converged <- abs(diff(tail(objs, 2))) <= ftol * abs(tail(objs, 1))
+      #has_f_converged <- abs(diff(tail(objs, 2))) <= ftol * abs(tail(objs, 1))
+      has_f_converged <- abs(diff(tail(objs, 2))) <= .5 * ftol * sum(abs(tail(objs, 2)))
     else 
       has_f_converged <- FALSE
     has_cross_stopval <- tail(objs, 1) <= stopval
     
     if (has_w_converged || has_f_converged || has_cross_stopval) break
   }
-  
   grads <- getgrad(w)
   objs <- c(objs, obj())  # for recording
   
   return(list(
     "w"           = w,
-    "times"       = times,
+    "cpu_time"    = cpu_time,
     "objs"        = objs,
     "convergence" = !(iter == maxiter),
     "moments"     = as.vector(grads %*% w) / c(1, 2, 3, 4)

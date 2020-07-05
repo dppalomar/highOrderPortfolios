@@ -12,8 +12,8 @@
 #' under review, 2020.
 #'
 #' @param X a data matrix
-#' @param align_order a bloolean variable, indicating whether to adjust the order of magnitude of parameters.
-#'                    NOTE: It is specially designed for \code{\link{MVSKtilting}} function.
+#' @param adjust_magnitude a boolean variable, indicating whether to adjust the order of magnitude of parameters.
+#'                         NOTE: It is specially designed for \code{\link{MVSKtilting}} function.
 #'                    
 #' @return A list containing the following elements:
 #' \item{\code{mu}}{mean vector.}
@@ -29,13 +29,13 @@
 #' library(highOrderPortfolios)
 #' data(X50)
 #' 
-#' params <- estimate_moments_MVSK(X50)
+#' X_moments <- estimate_moments(X50)
 #' }
 #'
 #' @import PerformanceAnalytics
 #' @importFrom stats cov
 #' @export
-estMomParams <- function(X, align_order = FALSE) {
+estimate_moments <- function(X, adjust_magnitude = FALSE) {
   N <- ncol(X)
   
   mu  <- colMeans(X)
@@ -43,8 +43,8 @@ estMomParams <- function(X, align_order = FALSE) {
   Phi <- PerformanceAnalytics::M3.MM(X, as.mat = FALSE)
   Psi <- PerformanceAnalytics::M4.MM(X, as.mat = FALSE)
   
-  if (align_order) {
-    d <- abs(evalMoms(w = rep(1/N, N), mom_params = estMomParams(X, FALSE)))
+  if (adjust_magnitude) {
+    d <- abs(eval_portfolio_moments(w = rep(1/N, N), X_moments = estimate_moments(X, FALSE)))
     mu  <- mu  / d[1]
     Sgm <- Sgm / d[2]
     Phi <- Phi / d[3]
@@ -63,7 +63,6 @@ estMomParams <- function(X, align_order = FALSE) {
   }
   gc()
   
-  
   return(list(mu = mu, Sgm = Sgm, Phi = Phi, Psi = Psi, Phi_shred = Phi_shred, Psi_shred = Psi_shred))
 }
 
@@ -81,7 +80,7 @@ estMomParams <- function(X, align_order = FALSE) {
 #' under review, 2020.
 #'
 #' @param w a numerical vector as portfolio weights.
-#' @param mom_params a list of moment parameters, see \code{\link{estMomParams}}.
+#' @param X_moments a list of moment parameters, see \code{\link{estimate_moments}}.
 #'                    
 #' @return Four moments of the given portfolio.
 #' 
@@ -90,15 +89,15 @@ estMomParams <- function(X, align_order = FALSE) {
 #' library(highOrderPortfolios)
 #' data(X50)
 #' 
-#' params <- estimate_moments_MVSK(X50)
-#' moments <- evalMoms(rep(1/50, 50), params)
+#' X_moments <- estimate_moments(X50)
+#' w_moments <- eval_portfolio_moments(rep(1/50, 50), X_moments)
 #' }
 #'
 #' @import PerformanceAnalytics
 #' @export
-evalMoms <- function(w, mom_params) {
-  c(mean     = as.numeric(w %*% mom_params$mu),
-    variance = as.numeric(w %*% mom_params$Sgm %*% w),
-    skewness = as.numeric(PerformanceAnalytics:::portm3(w = w, M3 = mom_params$Phi)),
-    kurtosis = as.numeric(PerformanceAnalytics:::portm4(w = w, M4 = mom_params$Psi)))
+eval_portfolio_moments <- function(w, X_moments) {
+  c(mean     = as.numeric(w %*% X_moments$mu),
+    variance = as.numeric(w %*% X_moments$Sgm %*% w),
+    skewness = as.numeric(PerformanceAnalytics:::portm3(w = w, M3 = X_moments$Phi)),
+    kurtosis = as.numeric(PerformanceAnalytics:::portm4(w = w, M4 = X_moments$Psi)))
 }
