@@ -19,3 +19,5 @@
 ^vignettes/nu_estimation.*\.html$
 ^vignettes/nu_estimation_cache$
 ^vignettes/nu_estimation_files$
+^doc$
+^Meta$
