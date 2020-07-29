@@ -9,5 +9,6 @@ X50 <- portfolioBacktest::stockDataResample(stockdata, N_sample = N, T_sample = 
 
 
 colnames(X50) <- rownames(X50) <- NULL
+attr(X50, "dimnames") <- NULL
 
 save(X50, file = "data/X50.RData", version = 2)
