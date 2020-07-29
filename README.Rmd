@@ -42,7 +42,7 @@ The package is based on the paper: Zhou and Palomar (2020).
 
 
 ## Installation
-The package can be installed from <!---[CRAN](https://CRAN.R-project.org/package=highOrderPortfolios) or---> [GitHub](https://github.com/dppalomar/highOrderPortfolios):
+The package can be installed from [CRAN](https://CRAN.R-project.org/package=highOrderPortfolios) or [GitHub](https://github.com/dppalomar/highOrderPortfolios):
 ```{r, eval=FALSE}
 # install stable version from CRAN
 install.packages("highOrderPortfolios")
@@ -76,7 +76,7 @@ X_moments <- estimate_moments(X50, adjust_magnitude = TRUE)
 w0 <- rep(1/50, 50)
 w0_moments <- eval_portfolio_moments(w0, X_moments)
 d <- abs(w0_moments) 
-kappa <- sqrt(w0%*%X_moments$Sgm%*%w0) * 0.3
+kappa <- 0.3 * sqrt(w0%*%X_moments$Sgm%*%w0)
 
 # portfolio optimization
 sol <- design_MVSKtilting_portfolio(d, X_moments, w_init = w0, w0 = w0, w0_moments = w0_moments, kappa = kappa)
@@ -95,7 +95,7 @@ For more detailed information, please check the
 
 
 ## Links
-Package: <!---[CRAN](https://CRAN.R-project.org/package=highOrderPortfolios) and---> [GitHub](https://github.com/dppalomar/highOrderPortfolios).
+Package: [CRAN](https://CRAN.R-project.org/package=highOrderPortfolios) and [GitHub](https://github.com/dppalomar/highOrderPortfolios).
 
 README file: [GitHub-readme](https://github.com/dppalomar/highOrderPortfolios/blob/master/README.md).
 
