@@ -1,7 +1,7 @@
 ---
 title: "Fast Design of High Order Portfolios"
 author: |
-  | Daniel P. Palomar and Rui Zhou
+  | Rui Zhou and Daniel P. Palomar
   | The Hong Kong University of Science and Technology (HKUST)
 date: "`r Sys.Date()`"
 output:
@@ -15,10 +15,10 @@ csl: ieee.csl
 bibliography: refs.bib
 vignette: >
   %\VignetteIndexEntry{Design of High-order Portfolios}
-  %\VignetteKeyword{High-order portfolios}
+  %\VignetteKeyword{High-order portfolio}
   %\VignetteKeyword{skewness}
   %\VignetteKeyword{kurtosis}
-  %\VignetteKeyword{efficient algorithm}
+  %\VignetteKeyword{portfolio design}
   %\VignetteKeyword{successive convex approximation}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
@@ -36,14 +36,14 @@ opts_chunk$set(
   pngquant = "--speed=1"
 )
 knit_hooks$set(pngquant = hook_pngquant)  # brew install pngquant
-options(width=120)
-# rmarkdown::render("vignettes/highOrderPortfolios.Rmd", "prettydoc::html_pretty")
+options(width=100)
+# rmarkdown::render("vignettes/DesignOfHighOrderPortfolios.Rmd", "prettydoc::html_pretty")
 ```
 
 -----------
 > This vignette illustrates the design of risk parity portfolios, which are
   widely used by practitioners in the financial industry, with the package
-  `highOrderPortfolios`, giving a description of the algorithms and
+  **highOrderPortfolios**, giving a description of the algorithms and
   comparing the performance against existing packages.
 
 
@@ -52,7 +52,8 @@ options(width=120)
 Let's start by loading the package:
 ```{r, echo=TRUE}
 library(highOrderPortfolios)
-# ?design_MVSK_portfolio  # to get help for the function
+
+?design_MVSK_portfolio  # to get help for the function
 ```
 
 The simplest use is for the [mean-variance-skewness-kurtosis portfolio](#mvsk-portfolio):
@@ -69,12 +70,12 @@ X_moments <- estimate_moments(X50, adjust_magnitude = TRUE)
 w0 <- rep(1/50, 50)
 w0_moments <- eval_portfolio_moments(w0, X_moments)
 d <- abs(w0_moments) 
-kappa <- sqrt(w0%*%X_moments$Sgm%*%w0) * 0.3
+kappa <- 0.3 * sqrt(w0 %*% X_moments$Sgm %*% w0)
 
 # portfolio optimization
 sol <- design_MVSKtilting_portfolio(d, X_moments, w_init = w0, w0 = w0, 
-                                    w0_moments = w0_moments, kappa = kappa, ftol = 1e-10)
-
+                                    w0_moments = w0_moments, kappa = kappa, 
+                                    ftol = 1e-10)
 ```
 
 Let's take a look at the result:
@@ -86,12 +87,12 @@ require(magrittr)
 data.frame(idx = 1:ncol(X50), weights = sol$w) %>%
   ggplot(aes(x = idx, y = weights)) +
   geom_bar(stat = "identity") +
-  labs(x = "Asset Indexes", y = "Portfolio Weights")
+  labs(x = "asset indexes", y = "portfolio weights")
 ```
 
 
 
-# What is the High-order Portfolio?
+# What is a High-Order Portfolio?
 ## Signal model
 Let us denote by $\mathbf{r}_{t}$ the vector of the **returns** of $N$ assets at time $t$ and suppose they follow an i.i.d. distribution
 (which is not a totally accurate assumption, but it is widely adopted, nonetheless) with mean $\boldsymbol{\mu}$ and covariance matrix $\boldsymbol{\Sigma}$.
@@ -100,7 +101,7 @@ The portfolio vector $\mathbf{w}$ denotes the normalized dollar weights allocate
 **portfolio return** is then $r_{t}^{\sf portf} = \mathbf{w}^{T}\mathbf{r}_{t}$,
 with expected return $\mathbf{w}^{T}\boldsymbol{\mu}$ and variance $\mathbf{w}^{T}\boldsymbol{\Sigma}\mathbf{w}$.
 
-## Modern Portfolio Theory
+## Modern portfolio theory
 In 1952, Markowitz proposed in his seminal paper [@Markowitz1952] to find a trade-off between the portfolio expected return and its risk measured by the variance:
 $$\begin{array}{ll}
 \underset{\mathbf{w}}{\textsf{maximize}} & \mathbf{w}^{T}\boldsymbol{\mu}-\lambda\mathbf{w}^{T}\boldsymbol{\Sigma}\mathbf{w}\\
@@ -114,22 +115,21 @@ Markowitz's portfolio has been heavily critized for over half a century and has 
 - The objective $\mathbf{w}^{T}\boldsymbol{\mu}-\lambda\mathbf{w}^{T}\boldsymbol{\Sigma}\mathbf{w}$ assumes investors have a taste for the quadratic expected utility function on portfolio return. But investors' tastes might be very different.
 
 
-## From Mean-Variance Portfolio to High-order Portfolio
+## From mean-variance portfolio to high-order portfolio
 
 To make up the drawbacks of the mean-variance framework, we need to take high-order moments of the portfolio return into consideration. It admits the following advantages:
 
-- The asymmetry and heavy-tailedness of portfolio return are well captured by its third and fourth central moments, i.e., skewness and kurtosis.
-- Incorporating high-order moments of the portoflio return can approximates a general expected utility function better with its Taylor series expansion truncated to the four most important order terms.
+- The asymmetry and heavy-tailedness of portfolio return are well captured by its third and fourth central moments, respectively, i.e., skewness and kurtosis.
+- Incorporating high-order moments of the portoflio return can approximate a general expected utility function better with its Taylor series expansion truncated to the four most important order terms.
 
 Generally speaking, a higher skewness usually means that the portfolio return admits a more positively skewed shape, while the lower kurtosis usually corresponds to thinner tail. We can extend the mean-variance framework by directly incorporating the high-order moments to obtain the mean-variance-skewness-kurtosis (MVSK) framework, where we shall try to strike a balance between maximizing the mean and skewness (odd moments) while minimizing the variance and kurtosis (even moments).
 
 
-## High-order Portfolios
+## High-order portfolios
 
-This package implements the algorithms designed in the paper [@zhou2020highOrderPortfolios]. The two main problem formulations covered in that paper are mean-variance-skewness-kurtosis (MVSK) and mean-variance-skewness-kurtosis tilting (MVSKT) problems.
+The package **highOrderPortfolios** implements the algorithms designed in the paper [@zhou2020highOrderPortfolios]. The two main problem formulations covered in that paper are mean-variance-skewness-kurtosis (MVSK) and mean-variance-skewness-kurtosis tilting (MVSKT) problems.
 
-### MVSK Portfolio
-
+### MVSK portfolio
 The simplest formulation for the high-order portfolio is directly extending the Markowitz portfolio objective by considering also the skewness and kurtosis:
 $$\begin{aligned}\underset{\mathbf{w}}{\mathsf{minimize}}\,\, & \,\,\,\,\,f\left(\mathbf{w}\right)=-\lambda_{1}\phi_{1}\left(\mathbf{w}\right)+\lambda_{2}\phi_{2}\left(\mathbf{w}\right) -\lambda_{3}\phi_{3}\left(\mathbf{w}\right)+\lambda_{4}\phi_{4}\left(\mathbf{w}\right)\\
 \mathsf{subject\,\,to} & \quad\mathbf{w}\in\mathcal{W},
@@ -139,11 +139,11 @@ where $\lambda_{1},\lambda_{2},\lambda_{3},\lambda_{4}\ge0$ are the parameters f
 
 - $\phi_{1}\left(\mathbf{w}\right) = \mathbf{w}^{T}\boldsymbol{\mu}$ is the first moment of portfolio return, 
 - $\phi_{2}\left(\mathbf{w}\right) = \mathbf{w}^{T}\boldsymbol{\Sigma}\mathbf{w}$ is the second central moment of portfolio return,
-- $\phi_{3}\left(\mathbf{w}\right) = \mathbf{w}^{T}\boldsymbol{\Phi}\left(\mathbf{w}\otimes\mathbf{w}\right)$ is the third central moment of portfolio return, where $\boldsymbol{\Phi} \in \mathbb{R}^{N \times N^2}$ is the coskewness matrix,
-- $\phi_{4}\left(\mathbf{w}\right) = \mathbf{w}^{T}\boldsymbol{\Psi}\left(\mathbf{w}\otimes\mathbf{w}\otimes\mathbf{w}\right)$ is the third central moment of portfolio return, where $\boldsymbol{\Psi} \in \mathbb{R}^{N \times N^3}$ is the cokurtosis matrix.
+- $\phi_{3}\left(\mathbf{w}\right) = \mathbf{w}^{T}\boldsymbol{\Phi}\left(\mathbf{w}\otimes\mathbf{w}\right)$ is the third central moment of portfolio return, where $\boldsymbol{\Phi} \in \mathbb{R}^{N \times N^2}$ is the co-skewness matrix,
+- $\phi_{4}\left(\mathbf{w}\right) = \mathbf{w}^{T}\boldsymbol{\Psi}\left(\mathbf{w}\otimes\mathbf{w}\otimes\mathbf{w}\right)$ is the third central moment of portfolio return, where $\boldsymbol{\Psi} \in \mathbb{R}^{N \times N^3}$ is the co-kurtosis matrix.
 
-### MVSK Tilting Portfolio
 
+### MVSK tilting portfolio
 Another formulation for the high-order portfolio is putting the high-order consideration into constraints. We study the algorithm for solving, for example, the MVSK tilting portfolio [@boudt2020mvskt]:
 $$\begin{aligned}\underset{\mathbf{w},\delta}{\mathsf{maximize}}\,\, & \quad\delta\\
 \mathsf{subject\,\,to} & \quad\phi_{1}\left(\mathbf{w}\right)\ge\phi_{1}\left(\mathbf{w}_{0}\right)+d_{1}\delta,\\
@@ -156,11 +156,11 @@ $$\begin{aligned}\underset{\mathbf{w},\delta}{\mathsf{maximize}}\,\, & \quad\del
 $$
 where $\mathbf{d}=\left[d_{1},d_{2},d_{3},d_{4}\right]\ge\mathbf{0}$ is the tilting direction, $\kappa^{2}$ determines the maximum tracking error volatility of $\mathbf{w}$ with respect to the reference portfolio $\mathbf{w}_{0}$.
 
-# Using the Package highOrderPortfolios
+# Using the Package **highOrderPortfolios**
 
-## Estimate the High-order Comoment Matrix
+## Estimate the high-order component matrix
 
-Unlike the mean and covariance matrix, the coskewness and cokurtosis matrix are rarely estimated. The basic R does not provide an embedded function for estimating them. Therefore, we conclude a function `estimate_moments()` in this package to help estimate the sample coskewness and cokurtosis matrix. A simple code example is presented as follows:
+Unlike the mean and covariance matrix, the co-skewness and co-kurtosis matrix are rarely estimated. The base R does not provide an embedded function for estimating them. Therefore, we include the function `estimate_moments()` in this package to help estimate the sample co-skewness and co-kurtosis matrix. A simple code example is presented as follows:
 ```{r, echo=TRUE}
 library(highOrderPortfolios)
 
@@ -173,7 +173,7 @@ names(X_moments)
 ```
 
 
-## MVSK Portfolio
+## MVSK portfolio
 
 A simple code example for solving the [MVSK portfolio](#mvsk-portfolio) is presented as follows:
 
@@ -192,25 +192,22 @@ Check the optimized MVSK portfolio:
 data.frame(idx = 1:ncol(X50), weights = sol$w) %>%
   ggplot(aes(x = idx, y = weights)) +
   geom_bar(stat = "identity") +
-  labs(x = "Asset Indexes", y = "Portfolio Weights")
+  labs(x = "Asset indexes", y = "Portfolio weights")
 ```
 
 
-## MVSK Tilting Portfolio
-
-```{r, echo=FALSE}
-# estimate moments, align the order of magnitude
-X_moments <- estimate_moments(X50, adjust_magnitude = TRUE)
-```
-
+## MVSK tilting portfolio
 A simple code example for solving the [MVSK tilting portfolio](#mvsk-tilting-portfolio) is presented as follows:
 
-```{r, echo=FALSE}
+```{r, echo=TRUE}
+# estimate moments
+X_moments <- estimate_moments(X50, adjust_magnitude = TRUE)
+
 # decide problem setting
 w0 <- rep(1/50, 50)
 w0_moments <- eval_portfolio_moments(w0, X_moments)
 d <- abs(w0_moments) 
-kappa <- sqrt(w0%*%X_moments$Sgm%*%w0) * 0.3
+kappa <- 0.3 * sqrt(w0 %*% X_moments$Sgm %*% w0)
 
 # portfolio optimization
 sol <- design_MVSKtilting_portfolio(d, X_moments, w_init = w0, w0 = w0, 
@@ -225,7 +222,7 @@ sol$improve  # the improvement of moments of the designed portfolio
 data.frame(idx = 1:ncol(X50), weights = sol$w) %>%
   ggplot(aes(x = idx, y = weights)) +
   geom_bar(stat = "identity") +
-  labs(x = "Asset Indexes", y = "Portfolio Weights")
+  labs(x = "Asset indexes", y = "Portfolio eights")
 ```
 
 
