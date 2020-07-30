@@ -3,7 +3,7 @@
 #' @description Design high-order portfolio by tilting a given portfolio to the MVSK efficient frontier
 #' (i.e., mean, variance, skewness, and kurtosis):
 #' \preformatted{
-#'   minimize     delta
+#'   minimize     - delta
 #'                m1(w) >= m1(w0) + delta*d1
 #'                m2(w) <= m2(w0) - delta*d2
 #'                m3(w) >= m3(w0) + delta*d3
@@ -38,10 +38,12 @@
 #' 
 #' @return A list containing the following elements:
 #' \item{\code{w}}{Optimal portfolio vector.}
+#' \item{\code{delta}}{Maximum tilting distance of the optimal portfolio.}
 #' \item{\code{cpu_time}}{Time usage with iteration.}
 #' \item{\code{objs}}{Function objective with iteration.}
 #' \item{\code{convergence}}{Bloolean flag to indicate whether or not the optimization converged.}
 #' \item{\code{moments}}{Moments of portfolio return at optimal portfolio weights.}
+#' \item{\code{improve}}{The relative improvement of moments of designed portfolio w.r.t. the reference portfolio.}
 #'
 #' @examples
 #' \dontrun{
