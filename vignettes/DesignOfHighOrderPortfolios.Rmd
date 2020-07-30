@@ -122,7 +122,7 @@ To make up the drawbacks of the mean-variance framework, we need to take high-or
 - The asymmetry and heavy-tailedness of portfolio return are well captured by its third and fourth central moments, respectively, i.e., skewness and kurtosis.
 - Incorporating high-order moments of the portoflio return can approximate a general expected utility function better with its Taylor series expansion truncated to the four most important order terms.
 
-Generally speaking, a higher skewness usually means that the portfolio return admits a more positively skewed shape, while the lower kurtosis usually corresponds to thinner tail. We can extend the mean-variance framework by directly incorporating the high-order moments to obtain the mean-variance-skewness-kurtosis (MVSK) framework, where we shall try to strike a balance between maximizing the mean and skewness (odd moments) while minimizing the variance and kurtosis (even moments).
+Generally speaking, more positive skewness usually means the right tail is more heavier than the left tail, while the lower kurtosis usually corresponds to thinner tails at both sides. We can extend the mean-variance framework by directly incorporating the high-order moments to obtain the mean-variance-skewness-kurtosis (MVSK) framework, where we shall try to strike a balance between maximizing the mean and skewness (odd moments) while minimizing the variance and kurtosis (even moments).
 
 
 ## High-order portfolios
@@ -222,7 +222,7 @@ sol$improve  # the improvement of moments of the designed portfolio
 data.frame(idx = 1:ncol(X50), weights = sol$w) %>%
   ggplot(aes(x = idx, y = weights)) +
   geom_bar(stat = "identity") +
-  labs(x = "Asset indexes", y = "Portfolio eights")
+  labs(x = "Asset indexes", y = "Portfolio weights")
 ```
 
 
