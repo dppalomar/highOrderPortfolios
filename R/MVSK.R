@@ -14,28 +14,28 @@
 #' Rui Zhou and and Daniel P. Palomar, “Solving High-Order Portfolios via Successive Convex Approximation Algorithms,”
 #' under review, 2020. <https://arxiv.org/abs/2008.00863>
 #' 
-#' @param lmd a numerical vector of length 4, indicating the weights of first four moments.
-#' @param X_moments a list of moment parameters, see \code{\link{estimate_moments}}.
-#' @param w_init a numerical vector, indicating the initial value of portfolio weights.
-#' @param leverage a number (>= 1), indicating the leverage of portfolio.
-#' @param method a string, indicating the algorithm method, must be one of: "Q-MVSK", "MM", "DC".
-#' @param tau_w a number (>= 0), guaranteeing the strong convexity of approximating function.
-#' @param gamma a number (0 < gamma <= 1), indicating the initial value of gamma.
-#' @param zeta a number (0 < zeta < 1), indicating the diminishing paramater of gamma.
-#' @param maxiter a positive integer, setting the maximum iteration.
-#' @param ftol a positive number, setting the convergence criterion of function objective.
-#' @param wtol a positive number, setting the convergence criterion of portfolio weights.
-#' @param stopval a number, setting the stop value of objective.
+#' @param lmd Numerical vector of length 4 indicating the weights of first four moments.
+#' @param X_moments List of moment parameters, see \code{\link{estimate_moments}}.
+#' @param w_init Numerical vector indicating the initial value of portfolio weights.
+#' @param leverage Number (>= 1) indicating the leverage of portfolio.
+#' @param method String indicating the algorithm method, must be one of: "Q-MVSK", "MM", "DC".
+#' @param tau_w Number (>= 0) guaranteeing the strong convexity of approximating function.
+#' @param gamma Number (0 < gamma <= 1) indicating the initial value of gamma.
+#' @param zeta Number (0 < zeta < 1) indicating the diminishing paramater of gamma.
+#' @param maxiter Positive integer setting the maximum iteration.
+#' @param ftol Positive number setting the convergence criterion of function objective.
+#' @param wtol Positive number setting the convergence criterion of portfolio weights.
+#' @param stopval Number setting the stop value of objective.
 #' 
 #' @return A list containing the following elements:
 #' \item{\code{w}}{Optimal portfolio vector.}
 #' \item{\code{cpu_time}}{Time usage with iteration.}
 #' \item{\code{objs}}{Function objective with iteration.}
-#' \item{\code{convergence}}{Bloolean flag to indicate whether or not the optimization converged.}
+#' \item{\code{convergence}}{Boolean flag to indicate whether or not the optimization converged.}
 #' \item{\code{moments}}{Moments of portfolio return at optimal portfolio weights.}
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(highOrderPortfolios)
 #' data(X50)
 #' 

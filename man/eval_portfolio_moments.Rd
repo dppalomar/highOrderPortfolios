@@ -7,9 +7,9 @@
 eval_portfolio_moments(w, X_moments)
 }
 \arguments{
-\item{w}{a numerical vector as portfolio weights.}
+\item{w}{Numerical vector with portfolio weights.}
 
-\item{X_moments}{a list of moment parameters, see \code{\link{estimate_moments}}.}
+\item{X_moments}{List of moment parameters, as obtained with function \code{\link{estimate_moments}}.}
 }
 \value{
 Four moments of the given portfolio.
@@ -19,7 +19,7 @@ Estimate first four moments of a given portfolio's return, namely,
 mean, variance, skewness, and kurtosis.
 }
 \examples{
-\dontrun{
+\donttest{
 library(highOrderPortfolios)
 data(X50)
 
@@ -30,7 +30,7 @@ w_moments <- eval_portfolio_moments(rep(1/50, 50), X_moments)
 }
 \references{
 Rui Zhou and and Daniel P. Palomar, “Solving High-Order Portfolios via Successive Convex Approximation Algorithms,”
-under review, 2020.
+under review, 2020. <https://arxiv.org/abs/2008.00863>
 }
 \author{
 Rui Zhou and Daniel P. Palomar

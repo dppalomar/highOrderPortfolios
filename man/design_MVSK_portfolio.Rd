@@ -20,36 +20,36 @@ design_MVSK_portfolio(
 )
 }
 \arguments{
-\item{lmd}{a numerical vector of length 4, indicating the weights of first four moments.}
+\item{lmd}{Numerical vector of length 4 indicating the weights of first four moments.}
 
-\item{X_moments}{a list of moment parameters, see \code{\link{estimate_moments}}.}
+\item{X_moments}{List of moment parameters, see \code{\link{estimate_moments}}.}
 
-\item{w_init}{a numerical vector, indicating the initial value of portfolio weights.}
+\item{w_init}{Numerical vector indicating the initial value of portfolio weights.}
 
-\item{leverage}{a number (>= 1), indicating the leverage of portfolio.}
+\item{leverage}{Number (>= 1) indicating the leverage of portfolio.}
 
-\item{method}{a string, indicating the algorithm method, must be one of: "Q-MVSK", "MM", "DC".}
+\item{method}{String indicating the algorithm method, must be one of: "Q-MVSK", "MM", "DC".}
 
-\item{tau_w}{a number (>= 0), guaranteeing the strong convexity of approximating function.}
+\item{tau_w}{Number (>= 0) guaranteeing the strong convexity of approximating function.}
 
-\item{gamma}{a number (0 < gamma <= 1), indicating the initial value of gamma.}
+\item{gamma}{Number (0 < gamma <= 1) indicating the initial value of gamma.}
 
-\item{zeta}{a number (0 < zeta < 1), indicating the diminishing paramater of gamma.}
+\item{zeta}{Number (0 < zeta < 1) indicating the diminishing paramater of gamma.}
 
-\item{maxiter}{a positive integer, setting the maximum iteration.}
+\item{maxiter}{Positive integer setting the maximum iteration.}
 
-\item{ftol}{a positive number, setting the convergence criterion of function objective.}
+\item{ftol}{Positive number setting the convergence criterion of function objective.}
 
-\item{wtol}{a positive number, setting the convergence criterion of portfolio weights.}
+\item{wtol}{Positive number setting the convergence criterion of portfolio weights.}
 
-\item{stopval}{a number, setting the stop value of objective.}
+\item{stopval}{Number setting the stop value of objective.}
 }
 \value{
 A list containing the following elements:
 \item{\code{w}}{Optimal portfolio vector.}
 \item{\code{cpu_time}}{Time usage with iteration.}
 \item{\code{objs}}{Function objective with iteration.}
-\item{\code{convergence}}{Bloolean flag to indicate whether or not the optimization converged.}
+\item{\code{convergence}}{Boolean flag to indicate whether or not the optimization converged.}
 \item{\code{moments}}{Moments of portfolio return at optimal portfolio weights.}
 }
 \description{
@@ -62,7 +62,7 @@ Design high-order portfolio based on weighted linear combination of first four m
 }
 }
 \examples{
-\dontrun{
+\donttest{
 library(highOrderPortfolios)
 data(X50)
 
@@ -80,7 +80,7 @@ sol <- design_MVSK_portfolio(lmd, X_moments)
 }
 \references{
 Rui Zhou and and Daniel P. Palomar, “Solving High-Order Portfolios via Successive Convex Approximation Algorithms,”
-under review, 2020.
+under review, 2020. <https://arxiv.org/abs/2008.00863>
 }
 \author{
 Rui Zhou and Daniel P. Palomar

@@ -7,26 +7,26 @@
 estimate_moments(X, adjust_magnitude = FALSE)
 }
 \arguments{
-\item{X}{a data matrix}
+\item{X}{Data matrix.}
 
-\item{adjust_magnitude}{a boolean variable, indicating whether to adjust the order of magnitude of parameters.
+\item{adjust_magnitude}{Boolean indicating whether to adjust the order of magnitude of parameters.
 NOTE: It is specially designed for \code{\link{design_MVSKtilting_portfolio}} function.}
 }
 \value{
 A list containing the following elements:
-\item{\code{mu}}{mean vector.}
+\item{\code{mu}}{Mean vector.}
 \item{\code{Sgm}}{Covariance matrix.}
-\item{\code{Phi}}{Coskewness matrix in vector form (collecting only the unique elements).}
-\item{\code{Psi}}{Cokurtosis matrix in vector form (collecting only the unique elements).}
-\item{\code{Phi_shred}}{Partition on \code{Phi}, see reference.}
-\item{\code{Psi_shred}}{Partition on \code{Psi}, see reference.}
+\item{\code{Phi}}{Co-skewness matrix in vector form (collecting only the unique elements).}
+\item{\code{Psi}}{Co-kurtosis matrix in vector form (collecting only the unique elements).}
+\item{\code{Phi_shred}}{Partition on \code{Phi} (see reference).}
+\item{\code{Psi_shred}}{Partition on \code{Psi} (see reference).}
 }
 \description{
 Estimate first four moments of multivariate observations, namely,
 mean vector, covariance matrix, coskewness matrix, and cokurtosis matrix.
 }
 \examples{
-\dontrun{
+\donttest{
 library(highOrderPortfolios)
 data(X50)
 
@@ -36,7 +36,7 @@ X_moments <- estimate_moments(X50)
 }
 \references{
 Rui Zhou and and Daniel P. Palomar, “Solving High-Order Portfolios via Successive Convex Approximation Algorithms,”
-under review, 2020.
+under review, 2020. <https://arxiv.org/abs/2008.00863>
 }
 \author{
 Rui Zhou and Daniel P. Palomar

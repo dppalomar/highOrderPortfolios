@@ -18,35 +18,25 @@
 #' Rui Zhou and and Daniel P. Palomar, “Solving High-Order Portfolios via Successive Convex Approximation Algorithms,”
 #' under review, 2020. <https://arxiv.org/abs/2008.00863>
 #' 
-#' @param d a numerical vector of length 4, indicating the tilting direction of first four moments.
-#' @param X_moments a list of moment parameters, see \code{\link{estimate_moments}}.
-#' @param w_init a numerical vector, indicating the initial value of portfolio weights.
-#' @param w0 a numerical vector, indicating the reference portfolio vector.
-#' @param w0_moments a numerical vector, indicating the reference moments. 
-#' @param leverage a number (>= 1), indicating the leverage of portfolio.
-#' @param kappa a number, indicating the maximum tracking error volatility. 
-#' @param method a string, indicating the algorithm method, must be one of: "Q-MVSK", "MM", "DC".
-#' @param tau_w a number (>= 0), guaranteeing the strong convexity of approximating function.
-#' @param tau_delta a number (>= 0), guaranteeing the strong convexity of approximating function.
-#' @param gamma a number (0 < gamma <= 1), indicating the initial value of gamma.
-#' @param zeta a number (0 < zeta < 1), indicating the diminishing paramater of gamma.
-#' @param maxiter a positive integer, setting the maximum iteration.
-#' @param ftol a positive number, setting the convergence criterion of function objective.
-#' @param wtol a positive number, setting the convergence criterion of portfolio weights.
-#' @param theta a number (0 < theta < 1), setting the combination coefficient when enlarge feasible set.
-#' @param stopval a number, setting the stop value of objective.
+#' @inheritParams design_MVSK_portfolio
+#' @param d Numerical vector of length 4 indicating the weights of first four moments.
+#' @param w0 Numerical vector indicating the reference portfolio vector.
+#' @param w0_moments Numerical vector indicating the reference moments. 
+#' @param kappa Number indicating the maximum tracking error volatility. 
+#' @param tau_delta Number (>= 0) guaranteeing the strong convexity of approximating function.
+#' @param theta Number (0 < theta < 1) setting the combination coefficient when enlarge feasible set.
 #' 
 #' @return A list containing the following elements:
 #' \item{\code{w}}{Optimal portfolio vector.}
 #' \item{\code{delta}}{Maximum tilting distance of the optimal portfolio.}
 #' \item{\code{cpu_time}}{Time usage with iteration.}
 #' \item{\code{objs}}{Function objective with iteration.}
-#' \item{\code{convergence}}{Bloolean flag to indicate whether or not the optimization converged.}
+#' \item{\code{convergence}}{Boolean flag to indicate whether or not the optimization converged.}
 #' \item{\code{moments}}{Moments of portfolio return at optimal portfolio weights.}
 #' \item{\code{improve}}{The relative improvement of moments of designed portfolio w.r.t. the reference portfolio.}
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(highOrderPortfolios)
 #' data(X50)
 #' 
@@ -57,7 +47,7 @@
 #' w0 <- rep(1/50, 50)
 #' w0_moments <- eval_portfolio_moments(w0, X_moments)
 #' d <- abs(w0_moments) 
-#' kappa <- sqrt(w0%*%X_moments$Sgm%*%w0) * 0.3
+#' kappa <- 0.3 * sqrt(w0 %*% X_moments$Sgm %*% w0)
 #' 
 #' # portfolio optimization
 #' sol <- design_MVSKtilting_portfolio(d, X_moments, w_init = w0, w0 = w0, 
@@ -312,6 +302,6 @@ design_MVSKtilting_portfolio <- function(d = rep(1, 4), X_moments,
     "improve"     = (moms - w0_moments) / d * c(1, -1, 1, -1)
   ))
   
-  browser()
+  browser()  # this is necessary to avoid errors with ECOSOlveR package...
 }
 

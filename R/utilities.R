@@ -9,23 +9,23 @@
 #'
 #' @references
 #' Rui Zhou and and Daniel P. Palomar, “Solving High-Order Portfolios via Successive Convex Approximation Algorithms,”
-#' under review, 2020.
+#' under review, 2020. <https://arxiv.org/abs/2008.00863>
 #'
-#' @param X a data matrix
-#' @param adjust_magnitude a boolean variable, indicating whether to adjust the order of magnitude of parameters.
+#' @param X Data matrix.
+#' @param adjust_magnitude Boolean indicating whether to adjust the order of magnitude of parameters.
 #'                         NOTE: It is specially designed for \code{\link{design_MVSKtilting_portfolio}} function.
 #'                    
 #' @return A list containing the following elements:
-#' \item{\code{mu}}{mean vector.}
+#' \item{\code{mu}}{Mean vector.}
 #' \item{\code{Sgm}}{Covariance matrix.}
-#' \item{\code{Phi}}{Coskewness matrix in vector form (collecting only the unique elements).}
-#' \item{\code{Psi}}{Cokurtosis matrix in vector form (collecting only the unique elements).}
-#' \item{\code{Phi_shred}}{Partition on \code{Phi}, see reference.}
-#' \item{\code{Psi_shred}}{Partition on \code{Psi}, see reference.}
+#' \item{\code{Phi}}{Co-skewness matrix in vector form (collecting only the unique elements).}
+#' \item{\code{Psi}}{Co-kurtosis matrix in vector form (collecting only the unique elements).}
+#' \item{\code{Phi_shred}}{Partition on \code{Phi} (see reference).}
+#' \item{\code{Psi_shred}}{Partition on \code{Psi} (see reference).}
 #'
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(highOrderPortfolios)
 #' data(X50)
 #' 
@@ -68,6 +68,7 @@ estimate_moments <- function(X, adjust_magnitude = FALSE) {
 
 
 
+
 #' @title Evaluate first four moments of a given portfolio
 #'
 #' @description Estimate first four moments of a given portfolio's return, namely,
@@ -77,15 +78,15 @@ estimate_moments <- function(X, adjust_magnitude = FALSE) {
 #'
 #' @references
 #' Rui Zhou and and Daniel P. Palomar, “Solving High-Order Portfolios via Successive Convex Approximation Algorithms,”
-#' under review, 2020.
+#' under review, 2020. <https://arxiv.org/abs/2008.00863>
 #'
-#' @param w a numerical vector as portfolio weights.
-#' @param X_moments a list of moment parameters, see \code{\link{estimate_moments}}.
+#' @param w Numerical vector with portfolio weights.
+#' @param X_moments List of moment parameters, as obtained with function \code{\link{estimate_moments}}.
 #'                    
 #' @return Four moments of the given portfolio.
 #' 
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(highOrderPortfolios)
 #' data(X50)
 #' 
