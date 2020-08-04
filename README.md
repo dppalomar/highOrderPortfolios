@@ -17,7 +17,7 @@ heavy tails and skewness. High-order portfolios use higher order moments to
 better characterize the return distribution. Different formulations and fast 
 algorithms are proposed for high-order portfolios based on the mean, variance, 
 skewness, and kurtosis.
-The package is based on the paper: Zhou and Palomar (2020).
+The package is based on the paper [Zhou and Palomar (2020)](https://arxiv.org/abs/2008.00863).
 
 
 ## Installation
