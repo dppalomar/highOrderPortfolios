@@ -12,7 +12,7 @@
 #'
 #' @references
 #' Rui Zhou and and Daniel P. Palomar, “Solving High-Order Portfolios via Successive Convex Approximation Algorithms,”
-#' under review, 2020.
+#' under review, 2020. <https://arxiv.org/abs/2008.00863>
 #' 
 #' @param lmd a numerical vector of length 4, indicating the weights of first four moments.
 #' @param X_moments a list of moment parameters, see \code{\link{estimate_moments}}.
