@@ -18,16 +18,16 @@ citEntry(entry = "Article",
          title        = "Solving High-Order Portfolios via Successive Convex Approximation Algorithms",
          author       = personList(as.person("Rui ZHOU"),
                                    as.person("D. P. Palomar")),
-         journal      = "under review",
+         journal      = "ArXiv: 2008.00863",
          volume       = "",
          number       = "",
-         pages        = "",
+         pages        = "1-13",
          year         = "2020",
-         url          = "https://doi.org/10.1109/???????",
+         url          = "https://arxiv.org/pdf/2008.00863.pdf",
          textVersion  =
-           paste("Rui Zhou and D. P. Palomar (2020).",
+           paste("R. Zhou and D. P. Palomar (2020).",
                  "Solving High-Order Portfolios via Successive Convex Approximation Algorithms.",
-                 "under review,",
-                 "",
-                 "https://doi.org/10.1109/???????")
+                 "ArXiv: 2008.00863,",
+                 "pp. 1-13.",
+                 "https://arxiv.org/pdf/2008.00863.pdf")
 )
