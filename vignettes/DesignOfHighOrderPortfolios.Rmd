@@ -24,7 +24,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
-```{r, echo = FALSE}
+```{r, echo=FALSE}
 library(knitr)
 opts_chunk$set(
   collapse = TRUE,
