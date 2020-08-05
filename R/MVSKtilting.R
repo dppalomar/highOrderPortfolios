@@ -55,7 +55,6 @@
 #' }
 #' 
 #' @importFrom utils tail
-#' @import PerformanceAnalytics
 #' @import quadprog
 #' @import lpSolveAPI
 #' @import ECOSolveR
@@ -88,7 +87,7 @@ design_MVSKtilting_portfolio <- function(d = rep(1, 4), X_moments,
   
   cpu_time <- c(0)
   objs <- c()  
-  getgrad <- function(w) rbind(mu, 2*w%*%Sgm, as.vector(PerformanceAnalytics:::derportm3(w, Phi)), as.vector(PerformanceAnalytics:::derportm4(w, Psi)))  # gradients computing function
+  getgrad <- function(w) rbind(mu, 2*w%*%Sgm, as.vector(PerformanceAnalytics_derportm3(w, Phi)), as.vector(PerformanceAnalytics_derportm4(w, Psi)))  # gradients computing function
   obj <- function() - min((moms - w0_moments) / d * c(1, -1, 1, -1))  # objective computing function, grads must be prepared before
   
   # browser()
@@ -120,7 +119,7 @@ design_MVSKtilting_portfolio <- function(d = rep(1, 4), X_moments,
   
   # compute current gradient and objective
   H3 <- 6 * sapply(Phi_shred, function(x) x%*%w)
-  H4 <- 4 * sapply(Psi_shred, function(x) PerformanceAnalytics:::derportm3(w, x))
+  H4 <- 4 * sapply(Psi_shred, function(x) PerformanceAnalytics_derportm3(w, x))
   grads <- rbind(mu, 2*w%*%Sgm, w%*%H3/2, w%*%H4/3)
   moms <- as.vector(grads %*% w) / c(1, 2, 3, 4)
   objs <- c(objs, obj())
@@ -275,7 +274,7 @@ design_MVSKtilting_portfolio <- function(d = rep(1, 4), X_moments,
     
     # Hessian matrix
     H3 <- 6 * sapply(Phi_shred, function(x) x%*%w)
-    H4 <- 4 * sapply(Psi_shred, function(x) PerformanceAnalytics:::derportm3(w, x))
+    H4 <- 4 * sapply(Psi_shred, function(x) PerformanceAnalytics_derportm3(w, x))
     
     # recovery gradients from Hessian information
     grads <- rbind(mu, 2*w%*%Sgm, w%*%H3/2, w%*%H4/3)

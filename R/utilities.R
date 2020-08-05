@@ -32,7 +32,8 @@
 #' X_moments <- estimate_moments(X50)
 #' }
 #'
-#' @import PerformanceAnalytics
+#' @importFrom PerformanceAnalytics M3.MM
+#' @importFrom PerformanceAnalytics M4.MM
 #' @importFrom stats cov
 #' @export
 estimate_moments <- function(X, adjust_magnitude = FALSE) {
@@ -40,8 +41,8 @@ estimate_moments <- function(X, adjust_magnitude = FALSE) {
   
   mu  <- colMeans(X)
   Sgm <- cov(X)
-  Phi <- PerformanceAnalytics::M3.MM(X, as.mat = FALSE)
-  Psi <- PerformanceAnalytics::M4.MM(X, as.mat = FALSE)
+  Phi <- M3.MM(X, as.mat = FALSE)
+  Psi <- M4.MM(X, as.mat = FALSE)
   
   if (adjust_magnitude) {
     d <- abs(eval_portfolio_moments(w = rep(1/N, N), X_moments = estimate_moments(X, FALSE)))
@@ -51,14 +52,14 @@ estimate_moments <- function(X, adjust_magnitude = FALSE) {
     Psi <- Psi / d[4]
   }
   
-  Phi_mat <- PerformanceAnalytics:::M3.vec2mat(Phi, N)
+  Phi_mat <- PerformanceAnalytics_M3.vec2mat(Phi, N)
   Phi_shred <- lapply(1:N, function(i) Phi_mat[, (1:N)+N*(i-1)])
   
-  Psi_mat <- PerformanceAnalytics:::M4.vec2mat(Psi, N)
+  Psi_mat <- PerformanceAnalytics_M4.vec2mat(Psi, N)
   Psi_shred <- list()
   for (i in 1:N) {
     tmp <- Psi_mat[, (1:N^2)+N^2*(i-1)]
-    Psi_shred[[i]] <- PerformanceAnalytics:::M3.mat2vec(tmp)
+    Psi_shred[[i]] <- PerformanceAnalytics_M3.mat2vec(tmp)
     gc()
   }
   gc()
@@ -94,11 +95,10 @@ estimate_moments <- function(X, adjust_magnitude = FALSE) {
 #' w_moments <- eval_portfolio_moments(rep(1/50, 50), X_moments)
 #' }
 #'
-#' @import PerformanceAnalytics
 #' @export
 eval_portfolio_moments <- function(w, X_moments) {
   c(mean     = as.numeric(w %*% X_moments$mu),
     variance = as.numeric(w %*% X_moments$Sgm %*% w),
-    skewness = as.numeric(PerformanceAnalytics:::portm3(w = w, M3 = X_moments$Phi)),
-    kurtosis = as.numeric(PerformanceAnalytics:::portm4(w = w, M4 = X_moments$Psi)))
+    skewness = as.numeric(PerformanceAnalytics_portm3(w = w, M3 = X_moments$Phi)),
+    kurtosis = as.numeric(PerformanceAnalytics_portm4(w = w, M4 = X_moments$Psi)))
 }
