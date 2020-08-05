@@ -24,6 +24,7 @@
 #' Solving High-Order Portfolios via Successive Convex Approximation Algorithms.
 #' <https://arxiv.org/abs/2008.00863>
 #'
+#' @useDynLib highOrderPortfolios
 #' @docType package
 #' @name highOrderPortfolios-package
 NULL
