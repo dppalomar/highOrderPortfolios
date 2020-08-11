@@ -8,7 +8,7 @@
 #' @author Rui Zhou and Daniel P. Palomar
 #'
 #' @references
-#' Rui Zhou and and Daniel P. Palomar, “Solving High-Order Portfolios via Successive Convex Approximation Algorithms,”
+#' Rui Zhou and Daniel P. Palomar, “Solving High-Order Portfolios via Successive Convex Approximation Algorithms,”
 #' under review, 2020. <https://arxiv.org/abs/2008.00863>
 #'
 #' @param X Data matrix.
@@ -78,7 +78,7 @@ estimate_moments <- function(X, adjust_magnitude = FALSE) {
 #' @author Rui Zhou and Daniel P. Palomar
 #'
 #' @references
-#' Rui Zhou and and Daniel P. Palomar, “Solving High-Order Portfolios via Successive Convex Approximation Algorithms,”
+#' Rui Zhou and Daniel P. Palomar, “Solving High-Order Portfolios via Successive Convex Approximation Algorithms,”
 #' under review, 2020. <https://arxiv.org/abs/2008.00863>
 #'
 #' @param w Numerical vector with portfolio weights.

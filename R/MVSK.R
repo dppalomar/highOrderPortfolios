@@ -11,7 +11,7 @@
 #' @author Rui Zhou and Daniel P. Palomar
 #'
 #' @references
-#' Rui Zhou and and Daniel P. Palomar, “Solving High-Order Portfolios via Successive Convex Approximation Algorithms,”
+#' Rui Zhou and Daniel P. Palomar, “Solving High-Order Portfolios via Successive Convex Approximation Algorithms,”
 #' under review, 2020. <https://arxiv.org/abs/2008.00863>
 #' 
 #' @param lmd Numerical vector of length 4 indicating the weights of first four moments.

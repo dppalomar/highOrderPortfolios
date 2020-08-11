@@ -20,7 +20,7 @@
 #' @author Rui Zhou and Daniel P. Palomar
 #'
 #' @references
-#' Rui Zhou and and Daniel P. Palomar (2020).
+#' Rui Zhou and Daniel P. Palomar (2020).
 #' Solving High-Order Portfolios via Successive Convex Approximation Algorithms.
 #' <https://arxiv.org/abs/2008.00863>
 #'
