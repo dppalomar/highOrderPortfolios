@@ -25,12 +25,12 @@
 #'
 #'
 #' @examples
-#' \donttest{
+#' 
 #' library(highOrderPortfolios)
 #' data(X50)
 #' 
-#' X_moments <- estimate_moments(X50)
-#' }
+#' X_moments <- estimate_moments(X50[, 1:10])
+#' 
 #'
 #' @importFrom PerformanceAnalytics M3.MM
 #' @importFrom PerformanceAnalytics M4.MM
@@ -87,13 +87,13 @@ estimate_moments <- function(X, adjust_magnitude = FALSE) {
 #' @return Four moments of the given portfolio.
 #' 
 #' @examples
-#' \donttest{
+#' 
 #' library(highOrderPortfolios)
 #' data(X50)
 #' 
-#' X_moments <- estimate_moments(X50)
-#' w_moments <- eval_portfolio_moments(rep(1/50, 50), X_moments)
-#' }
+#' X_moments <- estimate_moments(X50[, 1:10])
+#' w_moments <- eval_portfolio_moments(rep(1/10, 10), X_moments)
+#' 
 #'
 #' @export
 eval_portfolio_moments <- function(w, X_moments) {

@@ -36,15 +36,15 @@
 #' \item{\code{improve}}{The relative improvement of moments of designed portfolio w.r.t. the reference portfolio.}
 #'
 #' @examples
-#' \donttest{
+#' 
 #' library(highOrderPortfolios)
 #' data(X50)
 #' 
 #' # estimate moments
-#' X_moments <- estimate_moments(X50)
+#' X_moments <- estimate_moments(X50[, 1:10])
 #' 
 #' # decide problem setting
-#' w0 <- rep(1/50, 50)
+#' w0 <- rep(1/10, 10)
 #' w0_moments <- eval_portfolio_moments(w0, X_moments)
 #' d <- abs(w0_moments) 
 #' kappa <- 0.3 * sqrt(w0 %*% X_moments$Sgm %*% w0)
@@ -52,7 +52,7 @@
 #' # portfolio optimization
 #' sol <- design_MVSKtilting_portfolio(d, X_moments, w_init = w0, w0 = w0, 
 #'                                     w0_moments = w0_moments, kappa = kappa)
-#' }
+#' 
 #' 
 #' @importFrom utils tail
 #' @import quadprog

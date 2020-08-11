@@ -35,12 +35,12 @@
 #' \item{\code{moments}}{Moments of portfolio return at optimal portfolio weights.}
 #'
 #' @examples
-#' \donttest{
+#' 
 #' library(highOrderPortfolios)
 #' data(X50)
 #' 
 #' # estimate moments
-#' X_moments <- estimate_moments(X50)
+#' X_moments <- estimate_moments(X50[, 1:10])
 #' 
 #' # decide moment weights
 #' xi <- 10
@@ -48,7 +48,7 @@
 #' 
 #' # portfolio optimization
 #' sol <- design_MVSK_portfolio(lmd, X_moments)
-#' }
+#' 
 #' 
 #' @importFrom utils tail
 #' @export
