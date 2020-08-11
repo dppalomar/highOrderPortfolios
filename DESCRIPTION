@@ -1,5 +1,5 @@
 Package: highOrderPortfolios
-Title: Design of High-Order Portfolios via Mean, Variance, Skewness, and Kurtosis
+Title: Design of High-Order Portfolios including Skewness and Kurtosis
 Version: 0.0.1
 Date: 2020-08-04
 Description: The classical Markowitz's mean-variance portfolio formulation ignores 
@@ -7,7 +7,9 @@ Description: The classical Markowitz's mean-variance portfolio formulation ignor
     better characterize the return distribution. Different formulations and fast 
     algorithms are proposed for high-order portfolios based on the mean, variance, 
     skewness, and kurtosis.
-    The package is based on the paper: Zhou and Palomar (2020).
+    The package is based on the paper:
+    R. Zhou and Daniel P. Palomar (2020). "Solving High-Order Portfolios via 
+    Successive Convex Approximation Algorithms." <arXiv:2008.00863>.
 Authors@R: c(
   person(c("Daniel", "P."), "Palomar", role = c("cre", "aut"), email = "daniel.p.palomar@gmail.com"),
   person("Rui", "Zhou", role =  "aut", email = "rzhouae@connect.ust.hk")
