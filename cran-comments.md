@@ -10,7 +10,6 @@ First release in CRAN, version 0.0.1 (2020-08-04), (package also available in Gi
 ## R CMD check results
 
 There were no ERRORs or WARNINGs.
-There is a NOTE because we use some internal functions of the package PerformanceAnalytics.
 
 
 ## Reverse dependencies
