@@ -19,17 +19,17 @@ Estimate first four moments of a given portfolio's return, namely,
 mean, variance, skewness, and kurtosis.
 }
 \examples{
-\donttest{
+
 library(highOrderPortfolios)
 data(X50)
 
-X_moments <- estimate_moments(X50)
-w_moments <- eval_portfolio_moments(rep(1/50, 50), X_moments)
-}
+X_moments <- estimate_moments(X50[, 1:10])
+w_moments <- eval_portfolio_moments(rep(1/10, 10), X_moments)
+
 
 }
 \references{
-Rui Zhou and and Daniel P. Palomar, “Solving High-Order Portfolios via Successive Convex Approximation Algorithms,”
+Rui Zhou and Daniel P. Palomar, “Solving High-Order Portfolios via Successive Convex Approximation Algorithms,”
 under review, 2020. <https://arxiv.org/abs/2008.00863>
 }
 \author{

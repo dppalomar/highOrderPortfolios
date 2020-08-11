@@ -26,16 +26,16 @@ Estimate first four moments of multivariate observations, namely,
 mean vector, covariance matrix, coskewness matrix, and cokurtosis matrix.
 }
 \examples{
-\donttest{
+
 library(highOrderPortfolios)
 data(X50)
 
-X_moments <- estimate_moments(X50)
-}
+X_moments <- estimate_moments(X50[, 1:10])
+
 
 }
 \references{
-Rui Zhou and and Daniel P. Palomar, “Solving High-Order Portfolios via Successive Convex Approximation Algorithms,”
+Rui Zhou and Daniel P. Palomar, “Solving High-Order Portfolios via Successive Convex Approximation Algorithms,”
 under review, 2020. <https://arxiv.org/abs/2008.00863>
 }
 \author{

@@ -62,12 +62,12 @@ Design high-order portfolio based on weighted linear combination of first four m
 }
 }
 \examples{
-\donttest{
+
 library(highOrderPortfolios)
 data(X50)
 
 # estimate moments
-X_moments <- estimate_moments(X50)
+X_moments <- estimate_moments(X50[, 1:10])
 
 # decide moment weights
 xi <- 10
@@ -75,11 +75,11 @@ lmd <- c(1, xi/2, xi*(xi+1)/6, xi*(xi+1)*(xi+2)/24)
 
 # portfolio optimization
 sol <- design_MVSK_portfolio(lmd, X_moments)
-}
+
 
 }
 \references{
-Rui Zhou and and Daniel P. Palomar, “Solving High-Order Portfolios via Successive Convex Approximation Algorithms,”
+Rui Zhou and Daniel P. Palomar, “Solving High-Order Portfolios via Successive Convex Approximation Algorithms,”
 under review, 2020. <https://arxiv.org/abs/2008.00863>
 }
 \author{

@@ -83,15 +83,15 @@ Design high-order portfolio by tilting a given portfolio to the MVSK efficient f
 }
 }
 \examples{
-\donttest{
+
 library(highOrderPortfolios)
 data(X50)
 
 # estimate moments
-X_moments <- estimate_moments(X50)
+X_moments <- estimate_moments(X50[, 1:10])
 
 # decide problem setting
-w0 <- rep(1/50, 50)
+w0 <- rep(1/10, 10)
 w0_moments <- eval_portfolio_moments(w0, X_moments)
 d <- abs(w0_moments) 
 kappa <- 0.3 * sqrt(w0 \%*\% X_moments$Sgm \%*\% w0)
@@ -99,11 +99,11 @@ kappa <- 0.3 * sqrt(w0 \%*\% X_moments$Sgm \%*\% w0)
 # portfolio optimization
 sol <- design_MVSKtilting_portfolio(d, X_moments, w_init = w0, w0 = w0, 
                                     w0_moments = w0_moments, kappa = kappa)
-}
+
 
 }
 \references{
-Rui Zhou and and Daniel P. Palomar, “Solving High-Order Portfolios via Successive Convex Approximation Algorithms,”
+Rui Zhou and Daniel P. Palomar, “Solving High-Order Portfolios via Successive Convex Approximation Algorithms,”
 under review, 2020. <https://arxiv.org/abs/2008.00863>
 }
 \author{
