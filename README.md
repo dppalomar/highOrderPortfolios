@@ -21,11 +21,12 @@ The package is based on the paper [Zhou and Palomar (2020)](https://arxiv.org/ab
 
 
 ## Installation
-The package can be installed from [CRAN](https://CRAN.R-project.org/package=highOrderPortfolios) or [GitHub](https://github.com/dppalomar/highOrderPortfolios):
+The package can be installed from [GitHub](https://github.com/dppalomar/highOrderPortfolios):
+<!---[CRAN](https://CRAN.R-project.org/package=highOrderPortfolios) or---> 
 
 ```r
-# install stable version from CRAN
-install.packages("highOrderPortfolios")
+# install stable version from CRAN (not available yet)
+#install.packages("highOrderPortfolios")
 
 # install development version from GitHub
 devtools::install_github("dppalomar/highOrderPortfolios")
@@ -77,17 +78,22 @@ barplot(sol$w)
 <img src="man/figures/README-unnamed-chunk-5-2.png" width="75%" style="display: block; margin: auto;" />
 
 
-<!---
+
 ## Documentation
 For more detailed information, please check the
+[vignette](https://htmlpreview.github.io/?https://github.com/dppalomar/highOrderPortfolios/blob/master/vignettes/DesignOfHighOrderPortfolios.html).
+
+<!---
 [vignette](https://CRAN.R-project.org/package=highOrderPortfolios/vignettes/highOrderPortfolios.html).
 --->
 
 
 ## Links
-Package: [CRAN](https://CRAN.R-project.org/package=highOrderPortfolios) and [GitHub](https://github.com/dppalomar/highOrderPortfolios).
+Package: [GitHub](https://github.com/dppalomar/highOrderPortfolios).
+<!---[CRAN](https://CRAN.R-project.org/package=highOrderPortfolios) and --->
 
 README file: [GitHub-readme](https://github.com/dppalomar/highOrderPortfolios/blob/master/README.md).
 
-<!---Vignette: [CRAN-vignette](https://CRAN.R-project.org/package=highOrderPortfolios/vignettes/highOrderPortfolios.html).--->
+Vignette: [GitHub-vignette](https://htmlpreview.github.io/?https://github.com/dppalomar/highOrderPortfolios/blob/master/vignettes/DesignOfHighOrderPortfolios.html).
+<!---[CRAN-vignette](https://CRAN.R-project.org/package=highOrderPortfolios/vignettes/highOrderPortfolios.html).--->
 
