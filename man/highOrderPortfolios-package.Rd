@@ -23,9 +23,8 @@ For a quick help see the README file:
 }
 
 \references{
-Rui Zhou and Daniel P. Palomar (2020).
-Solving High-Order Portfolios via Successive Convex Approximation Algorithms.
-<https://arxiv.org/abs/2008.00863>
+R. Zhou and D. P. Palomar, "Solving High-Order Portfolios via Successive Convex Approximation Algorithms," 
+in IEEE Transactions on Signal Processing, vol. 69, pp. 892-904, 2021, doi: 10.1109/TSP.2021.3051369.
 }
 \author{
 Rui Zhou and Daniel P. Palomar

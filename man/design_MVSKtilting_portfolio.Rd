@@ -103,7 +103,7 @@ sol <- design_MVSKtilting_portfolio(d, X_moments, w_init = w0, w0 = w0,
 
 }
 \references{
-Rui Zhou and Daniel P. Palomar, “Solving High-Order Portfolios via Successive Convex Approximation Algorithms,”
+Rui Zhou and Daniel P. Palomar, "Solving High-Order Portfolios via Successive Convex Approximation Algorithms,"
 under review, 2020. <https://arxiv.org/abs/2008.00863>
 }
 \author{
