@@ -8,8 +8,9 @@
 #' @author Rui Zhou and Daniel P. Palomar
 #'
 #' @references
-#' Rui Zhou and Daniel P. Palomar, "Solving High-Order Portfolios via Successive Convex Approximation Algorithms,"
-#' under review, 2020. <https://arxiv.org/abs/2008.00863>
+#' R. Zhou and D. P. Palomar, "Solving High-Order Portfolios via Successive Convex Approximation Algorithms," 
+#' in \emph{IEEE Transactions on Signal Processing}, vol. 69, pp. 892-904, 2021.
+#' <doi:10.1109/TSP.2021.3051369>.
 #'
 #' @param X Data matrix.
 #' @param adjust_magnitude Boolean indicating whether to adjust the order of magnitude of parameters.
@@ -45,7 +46,7 @@ estimate_moments <- function(X, adjust_magnitude = FALSE) {
   Psi <- M4.MM(X, as.mat = FALSE)
   
   if (adjust_magnitude) {
-    d <- abs(eval_portfolio_moments(w = rep(1/N, N), X_moments = estimate_moments(X, FALSE)))
+    d <- abs(eval_portfolio_moments(w = rep(1/N, N), X_moments = list(mu = mu, Sgm = Sgm, Phi = Phi, Psi = Psi)))
     mu  <- mu  / d[1]
     Sgm <- Sgm / d[2]
     Phi <- Phi / d[3]
@@ -78,8 +79,9 @@ estimate_moments <- function(X, adjust_magnitude = FALSE) {
 #' @author Rui Zhou and Daniel P. Palomar
 #'
 #' @references
-#' Rui Zhou and Daniel P. Palomar, "Solving High-Order Portfolios via Successive Convex Approximation Algorithms,"
-#' under review, 2020. <https://arxiv.org/abs/2008.00863>
+#' R. Zhou and D. P. Palomar, "Solving High-Order Portfolios via Successive Convex Approximation Algorithms," 
+#' in \emph{IEEE Transactions on Signal Processing}, vol. 69, pp. 892-904, 2021.
+#' <doi:10.1109/TSP.2021.3051369>.
 #'
 #' @param w Numerical vector with portfolio weights.
 #' @param X_moments List of moment parameters, as obtained with function \code{\link{estimate_moments}}.
