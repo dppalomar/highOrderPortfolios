@@ -14,6 +14,7 @@ package?highOrderPortfolios
 ?design_MVSK_portfolio
 citation("highOrderPortfolios")
 vignette(package = "highOrderPortfolios")
+#tools::showNonASCIIfile("R/MVSK.R")
 
 
 ##
