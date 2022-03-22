@@ -36,7 +36,8 @@ X_moments <- estimate_moments(X50[, 1:10])
 }
 \references{
 R. Zhou and D. P. Palomar, "Solving High-Order Portfolios via Successive Convex Approximation Algorithms," 
-in \emph{IEEE Transactions on Signal Processing}, vol. 69, pp. 892-904, 2021, doi: 10.1109/TSP.2021.3051369.
+in \emph{IEEE Transactions on Signal Processing}, vol. 69, pp. 892-904, 2021.
+<doi:10.1109/TSP.2021.3051369>.
 }
 \author{
 Rui Zhou and Daniel P. Palomar

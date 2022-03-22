@@ -30,9 +30,9 @@
 #' @return A list containing the following elements:
 #' \item{\code{w}}{Optimal portfolio vector.}
 #' \item{\code{delta}}{Maximum tilting distance of the optimal portfolio.}
-#' \item{\code{cpu_time}}{Time usage with iteration.}
-#' \item{\code{objs}}{Function objective with iteration.}
-#' \item{\code{convergence}}{Boolean flag to indicate whether or not the optimization converged.}
+#' \item{\code{cpu_time_vs_iterations}}{Time usage over iterations.}
+#' \item{\code{objfun_vs_iterations}}{Objective function over iterations.}
+#' \item{\code{iterations}}{Iterations index.}
 #' \item{\code{moments}}{Moments of portfolio return at optimal portfolio weights.}
 #' \item{\code{improve}}{The relative improvement of moments of designed portfolio w.r.t. the reference portfolio.}
 #'
@@ -293,13 +293,14 @@ design_MVSKtilting_portfolio <- function(d = rep(1, 4), X_moments,
   }
   
   return(list(
-    "w"           = w,
-    "delta"       = delta,
-    "cpu_time"    = cpu_time,
-    "objs"        = objs,
-    "convergence" = !(iter == maxiter),
-    "moments"     = moms,
-    "improve"     = (moms - w0_moments) / d * c(1, -1, 1, -1)
+    "w"                      = w,
+    "delta"                  = delta,
+    "cpu_time_vs_iterations" = cpu_time,
+    "objfun_vs_iterations"   = objs,
+    "iterations"             = 0:iter,
+    "convergence"            = !(iter == maxiter),
+    "moments"                = moms,
+    "improve"                = (moms - w0_moments) / d * c(1, -1, 1, -1)
   ))
   
   browser()  # this is necessary to avoid errors with ECOSOlveR package...

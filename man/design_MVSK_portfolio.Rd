@@ -47,8 +47,9 @@ design_MVSK_portfolio(
 \value{
 A list containing the following elements:
 \item{\code{w}}{Optimal portfolio vector.}
-\item{\code{cpu_time}}{Time usage with iteration.}
-\item{\code{objs}}{Function objective with iteration.}
+\item{\code{cpu_time_vs_iterations}}{Time usage over iterations.}
+\item{\code{objfun_vs_iterations}}{Objective function over iterations.}
+\item{\code{iterations}}{Iterations index.}
 \item{\code{convergence}}{Boolean flag to indicate whether or not the optimization converged.}
 \item{\code{moments}}{Moments of portfolio return at optimal portfolio weights.}
 }
@@ -80,7 +81,8 @@ sol <- design_MVSK_portfolio(lmd, X_moments)
 }
 \references{
 R. Zhou and D. P. Palomar, "Solving High-Order Portfolios via Successive Convex Approximation Algorithms," 
-in IEEE Transactions on Signal Processing, vol. 69, pp. 892-904, 2021, doi: 10.1109/TSP.2021.3051369.
+in \emph{IEEE Transactions on Signal Processing}, vol. 69, pp. 892-904, 2021.
+<doi:10.1109/TSP.2021.3051369>.
 }
 \author{
 Rui Zhou and Daniel P. Palomar

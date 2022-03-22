@@ -127,7 +127,7 @@ Generally speaking, more positive skewness usually means the right tail is more 
 
 ## High-order portfolios
 
-The package **highOrderPortfolios** implements the algorithms designed in the paper [@zhou2020highOrderPortfolios]. The two main problem formulations covered in that paper are mean-variance-skewness-kurtosis (MVSK) and mean-variance-skewness-kurtosis tilting (MVSKT) problems.
+The package **highOrderPortfolios** implements the algorithms designed in the paper [@ZhouPalomar2021]. The two main problem formulations covered in that paper are mean-variance-skewness-kurtosis (MVSK) and mean-variance-skewness-kurtosis tilting (MVSKT) problems.
 
 ### MVSK portfolio
 The simplest formulation for the high-order portfolio is directly extending the Markowitz portfolio objective by considering also the skewness and kurtosis:

@@ -30,7 +30,8 @@ w_moments <- eval_portfolio_moments(rep(1/10, 10), X_moments)
 }
 \references{
 R. Zhou and D. P. Palomar, "Solving High-Order Portfolios via Successive Convex Approximation Algorithms," 
-in _IEEE Transactions on Signal Processing_, vol. 69, pp. 892-904, 2021, doi: 10.1109/TSP.2021.3051369.
+in \emph{IEEE Transactions on Signal Processing}, vol. 69, pp. 892-904, 2021.
+<doi:10.1109/TSP.2021.3051369>.
 }
 \author{
 Rui Zhou and Daniel P. Palomar
