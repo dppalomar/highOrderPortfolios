@@ -12,7 +12,10 @@ Description: The classical Markowitz's mean-variance portfolio formulation ignor
     Successive Convex Approximation Algorithms." <arXiv:2008.00863>.
 Authors@R: c(
   person(c("Daniel", "P."), "Palomar", role = c("cre", "aut"), email = "daniel.p.palomar@gmail.com"),
-  person("Rui", "Zhou", role =  "aut", email = "rzhouae@connect.ust.hk")
+  person("Rui", "Zhou", role = "aut", email = "rzhouae@connect.ust.hk"),
+  person("Dries", "Cornilly", role = "ctb", email = "driescornilly@gmail.com"),
+  person("Kris", "Boudt", role = "ctb", email = "Kris.Boudt@ugent.be"),
+  person("Peter", "Carl", role = "ctb", email = "peter@braverock.com")
   )
 Maintainer: Daniel P. Palomar <daniel.p.palomar@gmail.com>
 URL: https://github.com/dppalomar/highOrderPortfolios,
