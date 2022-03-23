@@ -63,9 +63,9 @@ design_MVSKtilting_portfolio(
 A list containing the following elements:
 \item{\code{w}}{Optimal portfolio vector.}
 \item{\code{delta}}{Maximum tilting distance of the optimal portfolio.}
-\item{\code{cpu_time}}{Time usage with iteration.}
-\item{\code{objs}}{Function objective with iteration.}
-\item{\code{convergence}}{Boolean flag to indicate whether or not the optimization converged.}
+\item{\code{cpu_time_vs_iterations}}{Time usage over iterations.}
+\item{\code{objfun_vs_iterations}}{Objective function over iterations.}
+\item{\code{iterations}}{Iterations index.}
 \item{\code{moments}}{Moments of portfolio return at optimal portfolio weights.}
 \item{\code{improve}}{The relative improvement of moments of designed portfolio w.r.t. the reference portfolio.}
 }
@@ -94,7 +94,7 @@ X_moments <- estimate_moments(X50[, 1:10])
 w0 <- rep(1/10, 10)
 w0_moments <- eval_portfolio_moments(w0, X_moments)
 d <- abs(w0_moments) 
-kappa <- 0.3 * sqrt(w0 \%*\% X_moments$Sgm \%*\% w0)
+kappa <- 0.3 * sqrt(w0 \%*\% Sgm \%*\% w0)
 
 # portfolio optimization
 sol <- design_MVSKtilting_portfolio(d, X_moments, w_init = w0, w0 = w0, 
