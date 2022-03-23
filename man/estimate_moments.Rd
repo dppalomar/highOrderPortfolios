@@ -16,6 +16,8 @@ NOTE: It is specially designed for \code{\link{design_MVSKtilting_portfolio}} fu
 A list containing the following elements:
 \item{\code{mu}}{Mean vector.}
 \item{\code{Sgm}}{Covariance matrix.}
+\item{\code{Phi_mat}}{Co-skewness matrix.}
+\item{\code{Psi_mat}}{Co-kurtosis matrix.}
 \item{\code{Phi}}{Co-skewness matrix in vector form (collecting only the unique elements).}
 \item{\code{Psi}}{Co-kurtosis matrix in vector form (collecting only the unique elements).}
 \item{\code{Phi_shred}}{Partition on \code{Phi} (see reference).}
