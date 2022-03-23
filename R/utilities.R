@@ -19,6 +19,8 @@
 #' @return A list containing the following elements:
 #' \item{\code{mu}}{Mean vector.}
 #' \item{\code{Sgm}}{Covariance matrix.}
+#' \item{\code{Phi_mat}}{Co-skewness matrix.}
+#' \item{\code{Psi_mat}}{Co-kurtosis matrix.}
 #' \item{\code{Phi}}{Co-skewness matrix in vector form (collecting only the unique elements).}
 #' \item{\code{Psi}}{Co-kurtosis matrix in vector form (collecting only the unique elements).}
 #' \item{\code{Phi_shred}}{Partition on \code{Phi} (see reference).}
@@ -38,8 +40,12 @@
 #' @importFrom stats cov
 #' @export
 estimate_moments <- function(X, adjust_magnitude = FALSE) {
-  N <- ncol(X)
+  M3.mat2vec <- get("M3.mat2vec", envir = asNamespace("PerformanceAnalytics"), inherits = FALSE)
+  M3.vec2mat <- get("M3.vec2mat", envir = asNamespace("PerformanceAnalytics"), inherits = FALSE)
+  M4.vec2mat <- get("M4.vec2mat", envir = asNamespace("PerformanceAnalytics"), inherits = FALSE)
   
+  
+  N <- ncol(X)
   mu  <- colMeans(X)
   Sgm <- cov(X)
   Phi <- M3.MM(X, as.mat = FALSE)
@@ -53,19 +59,19 @@ estimate_moments <- function(X, adjust_magnitude = FALSE) {
     Psi <- Psi / d[4]
   }
   
-  Phi_mat <- PerformanceAnalytics_M3.vec2mat(Phi, N)
+  Phi_mat <- M3.vec2mat(Phi, N)
   Phi_shred <- lapply(1:N, function(i) Phi_mat[, (1:N)+N*(i-1)])
   
-  Psi_mat <- PerformanceAnalytics_M4.vec2mat(Psi, N)
+  Psi_mat <- M4.vec2mat(Psi, N)
   Psi_shred <- list()
   for (i in 1:N) {
     tmp <- Psi_mat[, (1:N^2)+N^2*(i-1)]
-    Psi_shred[[i]] <- PerformanceAnalytics_M3.mat2vec(tmp)
+    Psi_shred[[i]] <- M3.mat2vec(tmp)
     gc()
   }
   gc()
   
-  return(list(mu = mu, Sgm = Sgm, Phi = Phi, Psi = Psi, Phi_shred = Phi_shred, Psi_shred = Psi_shred))
+  return(list(mu = mu, Sgm = Sgm, Phi_mat = Phi_mat, Psi_mat = Psi_mat, Phi = Phi, Psi = Psi, Phi_shred = Phi_shred, Psi_shred = Psi_shred))
 }
 
 
@@ -99,8 +105,11 @@ estimate_moments <- function(X, adjust_magnitude = FALSE) {
 #'
 #' @export
 eval_portfolio_moments <- function(w, X_moments) {
+  portm3 <- get("portm3", envir = asNamespace("PerformanceAnalytics"), inherits = FALSE)  
+  portm4 <- get("portm4", envir = asNamespace("PerformanceAnalytics"), inherits = FALSE)  
+  
   c(mean     = as.numeric(w %*% X_moments$mu),
     variance = as.numeric(w %*% X_moments$Sgm %*% w),
-    skewness = as.numeric(PerformanceAnalytics_portm3(w = w, M3 = X_moments$Phi)),
-    kurtosis = as.numeric(PerformanceAnalytics_portm4(w = w, M4 = X_moments$Psi)))
+    skewness = as.numeric(portm3(w = w, M3 = X_moments$Phi)),
+    kurtosis = as.numeric(portm4(w = w, M4 = X_moments$Psi)))
 }

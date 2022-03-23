@@ -56,66 +56,61 @@
 #' 
 #' 
 #' @importFrom utils tail
+#' @import PerformanceAnalytics
 #' @export
 design_MVSK_portfolio <- function(lmd = rep(1, 4), X_moments, 
                                   w_init = rep(1/length(X_moments$mu), length(X_moments$mu)), 
                                   leverage = 1, method = c("Q-MVSK", "MM", "DC"),
                                   tau_w = 0, gamma = 1, zeta = 1e-8, maxiter = 1e2, ftol = 1e-5, wtol = 1e-4, stopval = -Inf) {
+  method <- match.arg(method)
+  derportm3 <- get("derportm3", envir = asNamespace("PerformanceAnalytics"), inherits = FALSE)  
+  
   # error control
   if (leverage < 1) stop("leverage must be no less than 1.")
   if (leverage != 1) stop("Support for leverage > 1 is coming in next version.")
   
-  # argument handling
-  method <- match.arg(method)
-  if (method != "Q-MVSK") {gamma = 1; zeta = 0}
-  
+  # prep
   N <- length(X_moments$mu)
   Amat <- t(rbind(matrix(1, 1, N), diag(N)))
   bvec <- cbind(c(1, rep(0, N)))
-  w <- w_init
-
-  # extract moment parameters
-  mu  <- X_moments$mu
-  Sgm <- X_moments$Sgm
-  Phi <- X_moments$Phi
-  Psi <- X_moments$Psi
-  Phi_shred <- X_moments$Phi_shred
-  Psi_shred <- X_moments$Psi_shred
-  Phi_mat <- PerformanceAnalytics_M3.vec2mat(Phi, N)
-  Psi_mat <- PerformanceAnalytics_M4.vec2mat(Psi, N)
-
+  
   fun_eval <- function() {
     return_list <- list()
-    
+
     if (method == "Q-MVSK") {
-      return_list$H3 <- 6 * sapply(Phi_shred, function(x) x%*%w)
-      return_list$H4 <- 4 * sapply(Psi_shred, function(x) PerformanceAnalytics_derportm3(w, x))
+      return_list$H3 <- 6 * sapply(X_moments$Phi_shred, function(x) x%*%w)
+      return_list$H4 <- 4 * sapply(X_moments$Psi_shred, function(x) derportm3(w, x))
       return_list$H34 <- - lmd[3] * return_list$H3 + lmd[4] * return_list$H4
-      return_list$jac <- rbind("grad1" =  mu, "grad2" =  2 * c(Sgm %*% w), "grad3" =  (1/2) * c(return_list$H3 %*% w), "grad4" =  (1/3) * c(return_list$H4 %*% w))
+      return_list$jac <- rbind("grad1" = X_moments$mu, "grad2" = 2 * c(X_moments$Sgm %*% w), "grad3" = (1/2) * c(return_list$H3 %*% w), "grad4" = (1/3) * c(return_list$H4 %*% w))
       
     } else {
       w_kron_w <- kronecker(w, w)
-      return_list$jac <- rbind("grad1" =  mu, "grad2" =  2 * c(Sgm %*% w), "grad3" =  3 * c(Phi_mat %*% w_kron_w), "grad4" =  4 * c(Psi_mat %*% kronecker(w_kron_w, w)))
+      return_list$jac <- rbind("grad1" = X_moments$mu, "grad2" = 2 * c(X_moments$Sgm %*% w), "grad3" = 3 * c(X_moments$Phi_mat %*% w_kron_w), "grad4" = 4 * c(X_moments$Psi_mat %*% kronecker(w_kron_w, w)))
     }
     return_list$obj <- sum(lmd * as.vector(return_list$jac %*% w) / c(-1, 2, -3, 4))
     
     return(return_list)
   }
   
-  
+  # initialization
   start_time <- proc.time()[3]
+  if (method == "MM") {
+    gamma = 1; zeta = 0
+    rho <- leverage*lmd[3]*.maxEigHsnS(S = X_moments$Phi, N = N, func = "max") + leverage^2*lmd[4]*.maxEigHsnK(K = X_moments$Psi, N = N, func = "max")
+  }
+  if (method == "DC") {
+    gamma = 1; zeta = 0
+    rho <- leverage*lmd[3]*.maxEigHsnS(S = X_moments$Phi, N = N, func = "sum") + leverage^2*lmd[4]*.maxEigHsnK(K = X_moments$Psi, N = N, func = "sum")
+  }
+  w <- w_init
   cpu_time <- c(0)
-  objs  <- c() 
-  
-  # when method is "MM" or "DC"
-  if (method == "MM") rho <- leverage*lmd[3]*.maxEigHsnS(S = Phi, N = N, func = "max") + leverage^2*lmd[4]*.maxEigHsnK(K = Psi, N = N, func = "max")
-  if (method == "DC") rho <- leverage*lmd[3]*.maxEigHsnS(S = Phi, N = N, func = "sum") + leverage^2*lmd[4]*.maxEigHsnK(K = Psi, N = N, func = "sum")
-  
-  # compute current gradient and objective
+  objs  <- c()  
   fun_k <- fun_eval()
   objs <- c(objs, fun_k$obj)
 
+  #
   # SCA outer loop
+  #
   for (iter in 1:maxiter) {
     # record previous w
     w_old <- w
@@ -124,12 +119,12 @@ design_MVSK_portfolio <- function(lmd = rep(1, 4), X_moments,
     switch(method, 
            "Q-MVSK" = {
              H_ncvx <- .apprxHessian(fun_k$H34)
-             Qk <- 2*lmd[2]*Sgm + H_ncvx + diag(tau_w, N)
-             qk <- lmd[1]*mu + lmd[3]*fun_k$jac[3, ] - lmd[4]*fun_k$jac[4, ] + H_ncvx%*%w + tau_w*w
+             Qk <- 2*lmd[2]*X_moments$Sgm + H_ncvx + diag(tau_w, N)
+             qk <- lmd[1]*X_moments$mu + lmd[3]*fun_k$jac[3, ] - lmd[4]*fun_k$jac[4, ] + H_ncvx%*%w + tau_w*w
            },
            "MM" = {
-             Qk <- 2*lmd[2]*Sgm + diag(rho, N)
-             qk <- lmd[1]*mu + lmd[3]*fun_k$jac[3, ] - lmd[4]*fun_k$jac[4, ] + rho*w
+             Qk <- 2*lmd[2]*X_moments$Sgm + diag(rho, N)
+             qk <- lmd[1]*X_moments$mu + lmd[3]*fun_k$jac[3, ] - lmd[4]*fun_k$jac[4, ] + rho*w
            },
            "DC" = {
              Qk <- diag(rho, N)
@@ -145,13 +140,9 @@ design_MVSK_portfolio <- function(lmd = rep(1, 4), X_moments,
     w <- w + gamma * (w_hat - w)
     gamma <- gamma * (1 - zeta * gamma)
     
-    # recording ...
+    # recording...
     cpu_time <- c(cpu_time, proc.time()[3] - start_time) 
-    
-    # Hessian matrix and Jacobian matrix (gradients)
     fun_k <- fun_eval()
-
-    # record current objective
     objs <- c(objs, fun_k$obj)
     
     # termination criterion

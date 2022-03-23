@@ -14,3 +14,4 @@
 ^vignettes/DesignOfHighOrderPortfolios\.Rmd$
 ^vignettes/ieee\.csl$
 ^vignettes/refs\.bib$
+^R/PerformanceAnalytics_copy\.R$

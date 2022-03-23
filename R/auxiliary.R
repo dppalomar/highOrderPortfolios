@@ -20,7 +20,9 @@
 # upper bound for eigenvalue of Hessian of skewness (when leverage == 1) -------------------------------------------------
 #' @importFrom magrittr %>% multiply_by
 .maxEigHsnS <- function(S, N, func = "max") {
-  if (is.vector(S)) S <- PerformanceAnalytics_M3.vec2mat(S, N)
+  M3.vec2mat <- get("M3.vec2mat", envir = asNamespace("PerformanceAnalytics"), inherits = FALSE)  
+  
+  if (is.vector(S)) S <- M3.vec2mat(S, N)
   S <- abs(S)
   if (func == "max")
     res <- do.call(pmax, lapply(1:N, function(i) S[, .idx_mask(i, N)])) %>% rowSums() %>% max() %>% multiply_by(6)
@@ -32,7 +34,9 @@
 #' @importFrom magrittr %>%
 #  upper bound for eigenvalue of Hessian of kurtosis (when leverage == 1) ------------------------------------------------
 .maxEigHsnK <- function(K, N, func = "max") {
-  if (is.vector(K)) K <- PerformanceAnalytics_M4.vec2mat(K, N)
+  M4.vec2mat <- get("M4.vec2mat", envir = asNamespace("PerformanceAnalytics"), inherits = FALSE)  
+  
+  if (is.vector(K)) K <- M4.vec2mat(K, N)
   K <- abs(K)
   if (func == "max")
     res <- do.call(pmax, lapply(1:(N^2), function(i) K[, .idx_mask(i, N)])) %>% rowSums() %>% max() %>% multiply_by(12)
@@ -63,6 +67,11 @@
 #' @import nloptr
 .MVSKnloptr <- function(lmd = rep(1, 4), mom_params, w0 = rep(1/length(mom_params$mu), length(mom_params$mu)),
                         stopval = -Inf, xtol_rel = 1e-6, ftol_rel = 1e-6) {
+  portm3 <- get("portm3", envir = asNamespace("PerformanceAnalytics"), inherits = FALSE)  
+  portm4 <- get("portm4", envir = asNamespace("PerformanceAnalytics"), inherits = FALSE)  
+  derportm3 <- get("derportm3", envir = asNamespace("PerformanceAnalytics"), inherits = FALSE)  
+  derportm4 <- get("derportm4", envir = asNamespace("PerformanceAnalytics"), inherits = FALSE)  
+  
   # extract moment parameters
   mu  <- mom_params$mu
   Sgm <- mom_params$Sgm
@@ -73,15 +82,15 @@
   f <- function(w) {
     - lmd[1] * as.numeric(w %*% mu) +
       + lmd[2] * as.numeric(w %*% Sgm %*% w) +
-      - lmd[3] * as.numeric(PerformanceAnalytics_portm3(w = w, M3 = Phi)) +
-      + lmd[4] * as.numeric(PerformanceAnalytics_portm4(w = w, M4 = Psi))
+      - lmd[3] * as.numeric(portm3(w = w, M3 = Phi)) +
+      + lmd[4] * as.numeric(portm4(w = w, M4 = Psi))
   }
   
   grad_f <- function(w) {
     - lmd[1] * mu + 
       + lmd[2] * as.numeric(2 * Sgm %*% w) +
-      - lmd[3] * PerformanceAnalytics_derportm3(w, Phi) +
-      + lmd[4] * PerformanceAnalytics_derportm4(w, Psi) 
+      - lmd[3] * derportm3(w, Phi) +
+      + lmd[4] * derportm4(w, Psi) 
   }
   
   constraints <- function(w) {
