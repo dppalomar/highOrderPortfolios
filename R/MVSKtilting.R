@@ -59,6 +59,7 @@
 #' @import quadprog
 #' @import lpSolveAPI
 #' @import ECOSolveR
+#' @import PerformanceAnalytics
 #' @export
 design_MVSKtilting_portfolio <- function(d = rep(1, 4), X_moments, 
                                          w_init = rep(1/length(X_moments$mu), length(X_moments$mu)), 
@@ -66,33 +67,39 @@ design_MVSKtilting_portfolio <- function(d = rep(1, 4), X_moments,
                                          leverage = 1, kappa = 0, method = c("Q-MVSKT", "L-MVSKT"),
                                          tau_w = 1e-5, tau_delta = 1e-5, gamma = 1, zeta = 1e-8, maxiter = 1e2, ftol = 1e-5, wtol = 1e-5, 
                                          theta = 0.5, stopval = -Inf) {
+  method <- match.arg(method)
+  derportm3 <- get("derportm3", envir = asNamespace("PerformanceAnalytics"), inherits = FALSE)
+  derportm4 <- get("derportm4", envir = asNamespace("PerformanceAnalytics"), inherits = FALSE)
+  
   # error control
   if (leverage < 1) stop("leverage must be no less than 1.")
   if (leverage != 1) stop("Support for leverage > 1 is coming in next version.")
   
-  # argument handling
-  method <- match.arg(method)
+  # prep
+  N <- length(X_moments$mu)
   
-  # extract moment parameters
-  mu  <- X_moments$mu
-  Sgm <- X_moments$Sgm
-  Phi <- X_moments$Phi
-  Psi <- X_moments$Psi
-  Phi_shred <- X_moments$Phi_shred
-  Psi_shred <- X_moments$Psi_shred
+  fun_eval <- function() {
+    return_list <- list()
+    
+    return_list$H3 <- 6 * sapply(X_moments$Phi_shred, function(x) x%*%w)
+    return_list$H4 <- 4 * sapply(X_moments$Psi_shred, function(x) derportm3(w, x))
+    return_list$jac <- rbind("grad1" = X_moments$mu, "grad2" = 2 * c(X_moments$Sgm %*% w), "grad3" = (1/2) * c(return_list$H3 %*% w), "grad4" = (1/3) * c(return_list$H4 %*% w))
+    return_list$w_moments <- as.vector(return_list$jac %*% w) / c(1, 2, 3, 4)
+    return_list$obj <- -min((return_list$w_moments - w0_moments) / d * c(1, -1, 1, -1))
+    
+    return(return_list)
+  }
   
-  N <- length(mu)
+  # initialization
+  start_time <- proc.time()[3]
   w <- w_init
   delta <- 0
   if (is.null(w0_moments)) w0_moments <- eval_portfolio_moments(w = w, X_moments = X_moments)
-  
   cpu_time <- c(0)
-  objs <- c()  
-  getgrad <- function(w) rbind(mu, 2*w%*%Sgm, as.vector(PerformanceAnalytics_derportm3(w, Phi)), as.vector(PerformanceAnalytics_derportm4(w, Psi)))  # gradients computing function
-  obj <- function() - min((moms - w0_moments) / d * c(1, -1, 1, -1))  # objective computing function, grads must be prepared before
-  
-  # browser()
-  # when method is "MM" or "DC"
+  objs  <- c()
+  fun_k <- fun_eval()
+  objs <- c(objs, fun_k$obj)
+
   if (method == "Q-MVSKT") {
     # options_ecos <- ECOSolveR::ecos.control(feastol = ftol, reltol = ftol, abstol = ftol)
     options_ecos <- ECOSolveR::ecos.control()
@@ -100,7 +107,7 @@ design_MVSKtilting_portfolio <- function(d = rep(1, 4), X_moments,
     b_basic = 1
     G_basic <- cbind(-diag(N+1), 0)      # inequality constraint: w >= 0, delta >= 0, (and t >= 0)
     h_basic <- rep(0, N+1)
-    L2 <- .apprxHessian(Sgm, TRUE)$L
+    L2 <- .apprxHessian(X_moments$Sgm, TRUE)$L
   }
   if (method == "L-MVSKT") {  # initialize QP solver and LP solver, setting some constant parameters
     # QP solver: pre-setted parameter
@@ -115,43 +122,32 @@ design_MVSKtilting_portfolio <- function(d = rep(1, 4), X_moments,
     # set.bounds(lprec = lp, upper = c(rep(beta_w, N), beta_delta, Inf))
   }
   
-  
-  start_time <- proc.time()[3]
-  
-  # compute current gradient and objective
-  H3 <- 6 * sapply(Phi_shred, function(x) x%*%w)
-  H4 <- 4 * sapply(Psi_shred, function(x) PerformanceAnalytics_derportm3(w, x))
-  grads <- rbind(mu, 2*w%*%Sgm, w%*%H3/2, w%*%H4/3)
-  moms <- as.vector(grads %*% w) / c(1, 2, 3, 4)
-  objs <- c(objs, obj())
-  
+  #
   # SCA outer loop
+  #
   for (iter in 1:maxiter) {
-    
     # record previous w and delta
     w_old <- w; delta_old <- delta
     
-    # browser()
     # compute eta for enlarging the feasible set of approximating problem
     if (method == "Q-MVSKT") {  
       # approximate and decompose Hessian matrix
-      tmp3 <- .apprxHessian(-H3, TRUE); tmp4 <- .apprxHessian(H4, TRUE)
+      tmp3 <- .apprxHessian(-fun_k$H3, TRUE); tmp4 <- .apprxHessian(fun_k$H4, TRUE)
       L3 <- tmp3$L; L4 <- tmp4$L; H3_app <- tmp3$hsn; H4_app <- tmp4$hsn
-      # browser()
-      gk <- (moms - w0_moments) * c(-1, 1, -1, 1) + delta * d  
+      gk <- (fun_k$w_moments - w0_moments) * c(-1, 1, -1, 1) + delta * d  
       if (all(gk[3:4] <= 0)) {  # only g_3 and g_4 need approximation
         eta <- 0
       } else {
         # tracking error (g_5) constraint
-        tmpRef <- .QCQP2SOCP(q = c(-2*as.vector(w0%*%Sgm), 0, 0),
-                             l = as.numeric(w0%*%Sgm%*%w0) - kappa^2,
+        tmpRef <- .QCQP2SOCP(q = c(-2*as.vector(w0%*%X_moments$Sgm), 0, 0),
+                             l = as.numeric(w0%*%X_moments$Sgm%*%w0) - kappa^2,
                              L = rbind(rbind(L2, 0), 0))
         GRef <- tmpRef$G
         hRef <- tmpRef$h
         
         # first moment (g_1) constraint
         h1 = - w0_moments[1]  
-        G1 <- rbind(c(-mu, d[1], 0))
+        G1 <- rbind(c(-X_moments$mu, d[1], 0))
         
         # second moment (g_2) constraint
         tmp2 <- .QCQP2SOCP(q = c(rep(0, N), d[2], 0),
@@ -161,15 +157,15 @@ design_MVSKtilting_portfolio <- function(d = rep(1, 4), X_moments,
         h2 <- tmp2$h
         
         # third moment (g_3) constraint
-        tmp3 <- .QCQP2SOCP(q = c(-grads[3, ]-as.vector(w%*%H3_app), d[3], -1), 
-                           l = gk[3] + sum(grads[3, ]*w) - d[3]*delta +as.numeric( w%*%H3_app%*%w/2),
+        tmp3 <- .QCQP2SOCP(q = c(-fun_k$jac[3, ]-as.vector(w%*%H3_app), d[3], -1), 
+                           l = gk[3] + sum(fun_k$jac[3, ]*w) - d[3]*delta +as.numeric( w%*%H3_app%*%w/2),
                            L = rbind(rbind(L3/sqrt(2), 0), 0))
         G3 <- tmp3$G
         h3 <- tmp3$h
         
         # fourth moment (g_4) constraint
-        tmp4 <- .QCQP2SOCP(q = c(grads[4, ]-as.vector(w%*%H4_app), d[4], -1), 
-                           l = gk[4] - sum(grads[4, ]*w) - d[4]*delta + as.numeric(w%*%H4_app%*%w/2),
+        tmp4 <- .QCQP2SOCP(q = c(fun_k$jac[4, ]-as.vector(w%*%H4_app), d[4], -1), 
+                           l = gk[4] - sum(fun_k$jac[4, ]*w) - d[4]*delta + as.numeric(w%*%H4_app%*%w/2),
                            L = rbind(rbind(L4/sqrt(2), 0), 0))
         G4 <- tmp4$G
         h4 <- tmp4$h
@@ -184,8 +180,8 @@ design_MVSKtilting_portfolio <- function(d = rep(1, 4), X_moments,
       }
     }
     if (method == "L-MVSKT") {
-      f.con <- cbind(rbind(-2 * as.numeric((w-w0)%*%Sgm), grads * c(1, -1, 1, -1)), c(0, -d))
-      gk <- c((w-w0)%*%Sgm%*%(w-w0) - kappa^2, (moms - w0_moments) * c(-1, 1, -1, 1) + delta * d) 
+      f.con <- cbind(rbind(-2 * as.numeric((w-w0)%*%X_moments$Sgm), fun_k$jac * c(1, -1, 1, -1)), c(0, -d))
+      gk <- c((w-w0)%*%X_moments$Sgm%*%(w-w0) - kappa^2, (fun_k$w_moments - w0_moments) * c(-1, 1, -1, 1) + delta * d) 
       f.rhs <- gk + f.con%*%c(w, delta)
       if ( all(gk <= 0) ) {
         eta <- 0
@@ -200,9 +196,6 @@ design_MVSKtilting_portfolio <- function(d = rep(1, 4), X_moments,
     
     
 
-    
-    
-    # browser()
     # solve the approximating problem
     if (method == "Q-MVSKT") {
       # the objective
@@ -213,15 +206,15 @@ design_MVSKtilting_portfolio <- function(d = rep(1, 4), X_moments,
       hObj <- tmpObj$h
       
       # tracking error (g_5) constraint
-      tmpRef <- .QCQP2SOCP(q = c(-2*as.vector(w0%*%Sgm), 0, 0),
-                           l = as.numeric(w0%*%Sgm%*%w0) - kappa^2,
+      tmpRef <- .QCQP2SOCP(q = c(-2*as.vector(w0%*%X_moments$Sgm), 0, 0),
+                           l = as.numeric(w0%*%X_moments$Sgm%*%w0) - kappa^2,
                            L = rbind(rbind(L2, 0), 0))
       GRef <- tmpRef$G
       hRef <- tmpRef$h
       
       # first moment (g_1) constraint
       h1 = - w0_moments[1]  
-      G1 <- rbind(c(-mu, d[1], 0))
+      G1 <- rbind(c(-X_moments$mu, d[1], 0))
       
       # second moment (g_2) constraint
       tmp2 <- .QCQP2SOCP(q = c(rep(0, N), d[2], 0),
@@ -231,15 +224,15 @@ design_MVSKtilting_portfolio <- function(d = rep(1, 4), X_moments,
       h2 <- tmp2$h
       
       # third moment (g_3) constraint
-      tmp3 <- .QCQP2SOCP(q = c(-grads[3, ]-as.vector(w%*%H3_app), d[3], 0),
-                         l = gk[3] + sum(grads[3, ]*w) - d[3]*delta +as.numeric( w%*%H3_app%*%w/2) - eta,
+      tmp3 <- .QCQP2SOCP(q = c(-fun_k$jac[3, ]-as.vector(w%*%H3_app), d[3], 0),
+                         l = gk[3] + sum(fun_k$jac[3, ]*w) - d[3]*delta +as.numeric( w%*%H3_app%*%w/2) - eta,
                          L = rbind(rbind(L3/sqrt(2), 0), 0))
       G3 <- tmp3$G
       h3 <- tmp3$h
       
       # fourth moment (g_4) constraint
-      tmp4 <- .QCQP2SOCP(q = c(grads[4, ]-as.vector(w%*%H4_app), d[4], 0),
-                         l = gk[4] - sum(grads[4, ]*w) - d[4]*delta + as.numeric(w%*%H4_app%*%w/2) - eta,
+      tmp4 <- .QCQP2SOCP(q = c(fun_k$jac[4, ]-as.vector(w%*%H4_app), d[4], 0),
+                         l = gk[4] - sum(fun_k$jac[4, ]*w) - d[4]*delta + as.numeric(w%*%H4_app%*%w/2) - eta,
                          L = rbind(rbind(L4/sqrt(2), 0), 0))
       G4 <- tmp4$G
       h4 <- tmp4$h
@@ -269,21 +262,12 @@ design_MVSKtilting_portfolio <- function(d = rep(1, 4), X_moments,
     delta <- delta + gamma * (delta_hat - delta)
     gamma <- gamma * (1 - zeta * gamma)
     
-    # recording ...
+    # recording...
     cpu_time <- c(cpu_time, proc.time()[3] - start_time) 
-    
-    
-    # Hessian matrix
-    H3 <- 6 * sapply(Phi_shred, function(x) x%*%w)
-    H4 <- 4 * sapply(Psi_shred, function(x) PerformanceAnalytics_derportm3(w, x))
-    
-    # recovery gradients from Hessian information
-    grads <- rbind(mu, 2*w%*%Sgm, w%*%H3/2, w%*%H4/3)
-    moms <- as.vector(grads %*% w) / c(1, 2, 3, 4)
-    
-    objs <- c(objs, obj())
-    
-    # judge convergence
+    fun_k <- fun_eval()
+    objs <- c(objs, fun_k$obj)
+
+    # termination criterion
     # has_w_converged <- all(abs(w - w_old) <= .5 * wtol )
     has_w_converged <- norm(w - w_old, "2") <= wtol * norm(w_old, "2")
     has_f_converged <- abs(diff(tail(objs, 2))) <= ftol * abs(tail(objs, 1))
@@ -299,8 +283,8 @@ design_MVSKtilting_portfolio <- function(d = rep(1, 4), X_moments,
     "objfun_vs_iterations"   = objs,
     "iterations"             = 0:iter,
     "convergence"            = !(iter == maxiter),
-    "moments"                = moms,
-    "improve"                = (moms - w0_moments) / d * c(1, -1, 1, -1)
+    "moments"                = fun_k$w_moments,
+    "improve"                = (fun_k$w_moments - w0_moments) / d * c(1, -1, 1, -1)
   ))
   
   browser()  # this is necessary to avoid errors with ECOSOlveR package...
