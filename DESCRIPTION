@@ -29,6 +29,7 @@ Imports:
     nloptr,
     PerformanceAnalytics,
     quadprog,
+    fitHeavyTail,
     stats,
     utils
 Suggests:
