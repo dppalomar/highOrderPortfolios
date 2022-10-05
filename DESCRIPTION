@@ -1,7 +1,7 @@
 Package: highOrderPortfolios
 Title: Design of High-Order Portfolios Including Skewness and Kurtosis
 Version: 0.0.1.9000
-Date: 2020-08-04
+Date: 2022-10-05
 Description: The classical Markowitz's mean-variance portfolio formulation ignores 
     heavy tails and skewness. High-order portfolios use higher order moments to
     better characterize the return distribution. Different formulations and fast 
@@ -26,7 +26,6 @@ Depends:
 Imports:
     ECOSolveR,
     lpSolveAPI,
-    magrittr,
     nloptr,
     PerformanceAnalytics,
     quadprog,
