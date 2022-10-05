@@ -16,7 +16,7 @@
 #' <doi:10.1109/TSP.2021.3051369>.
 #' 
 #' X. Wang, R. Zhou, J. Ying, and D. P. Palomar, "Efficient and Scalable High-Order Portfolios Design via Parametric Skew-t Distribution," 
-#' Available in arXiv, 2022. <https://XXXX>.
+#' Available in arXiv, 2022. <https://arxiv.org/pdf/2206.02412v1.pdf>.
 #' 
 #' @param lmd Numerical vector of length 4 indicating the weights of first four moments.
 #' @param X_moments List of moment parameters, see \code{\link{estimate_moments}}.

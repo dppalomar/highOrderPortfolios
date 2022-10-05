@@ -16,8 +16,8 @@ citEntry(entry = "Manual",
 
 citEntry(entry = "Article",
          title        = "Solving High-Order Portfolios via Successive Convex Approximation Algorithms",
-         author       = personList(as.person("Rui ZHOU"),
-                                   as.person("D. P. Palomar")),
+         author       = personList(as.person("Rui Zhou"),
+                                   as.person("Daniel P. Palomar")),
          journal      = "IEEE Transactions on Signal Processing",
          volume       = "69",
          pages        = "892-904",
@@ -30,4 +30,20 @@ citEntry(entry = "Article",
                  "vol. 69",
                  "pp. 892-904.",
                  "doi:10.1109/TSP.2021.3051369")
+)
+
+citEntry(entry = "Article",
+         title        = "Efficient and Scalable High-Order Portfolios Design via Parametric Skew-t Distribution",
+         author       = personList(as.person("Xiwen Wang"),
+                                   as.person("Rui Zhou"),
+                                   as.person("Jiaxi Ying"),
+                                   as.person("Daniel P. Palomar")),
+         journal      = "Available in arXiv",
+         year         = "2022",
+         url          = "doi:https://arxiv.org/pdf/2206.02412v1.pdf",
+         textVersion  =
+           paste("X. Wang, R. Zhou, J. Ying, and D. P. Palomar (2022).",
+                 "Efficient and Scalable High-Order Portfolios Design via Parametric Skew-t Distribution.",
+                 "Available in arXiv,",
+                 "doi:https://arxiv.org/pdf/2206.02412v1.pdf")
 )
