@@ -5,7 +5,7 @@
 #' \preformatted{
 #'   minimize     - lmd1*(w'*mu) + lmd2*(w'*Sigma*w) 
 #'                - lmd3*(w'*Phi*w*w) + lmd4*(w'*Psi*w*w*w)
-#'   subject to   ||w||_1 <= leverage, sum(w) == 1,
+#'   subject to   ||w||_1 <= leverage, sum(w) == 1.
 #' }
 #'
 #' @author Rui Zhou and Daniel P. Palomar
@@ -45,27 +45,29 @@
 #' data(X50)
 #' 
 #' # estimate moments
-#' X_moments <- estimate_moments(X50[, 1:10])
+#' X_moments <- estimate_sample_moments(X50[, 1:10])
 #' 
 #' # decide moment weights
 #' xi <- 10
 #' lmd <- c(1, xi/2, xi*(xi+1)/6, xi*(xi+1)*(xi+2)/24)
 #' 
 #' # portfolio optimization
-#' sol <- design_MVSK_portfolio(lmd, X_moments)
+#' sol <- design_MVSK_portfolio_via_sample_moments(lmd, X_moments)
 #' 
 #' 
 #' @importFrom utils tail
 #' @import PerformanceAnalytics
 #' @export
-design_MVSK_portfolio <- function(lmd = rep(1, 4), X_moments, 
-                                  w_init = rep(1/length(X_moments$mu), length(X_moments$mu)), 
-                                  leverage = 1, method = c("Q-MVSK", "MM", "DC"),
-                                  tau_w = 0, gamma = 1, zeta = 1e-8, maxiter = 1e2, ftol = 1e-5, wtol = 1e-4, stopval = -Inf) {
+design_MVSK_portfolio_via_sample_moments <- function(lmd = rep(1, 4), X_moments, 
+                                                     w_init = rep(1/length(X_moments$mu), length(X_moments$mu)), 
+                                                     leverage = 1, method = c("Q-MVSK", "MM", "DC"),
+                                                     tau_w = 0, gamma = 1, zeta = 1e-8, maxiter = 1e2, ftol = 1e-5, wtol = 1e-4, stopval = -Inf) {
   method <- match.arg(method)
   derportm3 <- get("derportm3", envir = asNamespace("PerformanceAnalytics"), inherits = FALSE)  
   
   # error control
+  if (attr(X_moments, "type") != "X_sample_moments")
+    stop("Argument X_moments is not of type ", dQuote("X_sample_moments"), ". It should be returned from function ", dQuote("estimate_sample_moments()"), ".")
   if (leverage < 1) stop("leverage must be no less than 1.")
   if (leverage != 1) stop("Support for leverage > 1 is coming in next version.")
   
@@ -163,6 +165,5 @@ design_MVSK_portfolio <- function(lmd = rep(1, 4), X_moments,
     "convergence"            = !(iter == maxiter),
     "moments"                = as.vector(fun_k$jac %*% w) / c(1, 2, 3, 4)
   ))
-  
 }
 

@@ -18,20 +18,18 @@
 }
 
 # upper bound for eigenvalue of Hessian of skewness (when leverage == 1) -------------------------------------------------
-#' @importFrom magrittr %>% multiply_by
 .maxEigHsnS <- function(S, N, func = "max") {
   M3.vec2mat <- get("M3.vec2mat", envir = asNamespace("PerformanceAnalytics"), inherits = FALSE)  
   
   if (is.vector(S)) S <- M3.vec2mat(S, N)
   S <- abs(S)
   if (func == "max")
-    res <- do.call(pmax, lapply(1:N, function(i) S[, .idx_mask(i, N)])) %>% rowSums() %>% max() %>% multiply_by(6)
+    res <- do.call(pmax, lapply(1:N, function(i) S[, .idx_mask(i, N)]))
   if (func == "sum")
-    res <- Reduce("+", lapply(1:N, function(i) S[, .idx_mask(i, N)])) %>% rowSums() %>% max() %>% multiply_by(6) 
-  return(res)
+    res <- Reduce("+", lapply(1:N, function(i) S[, .idx_mask(i, N)]))
+  return(6*max(rowSums(res)))
 }
 
-#' @importFrom magrittr %>%
 #  upper bound for eigenvalue of Hessian of kurtosis (when leverage == 1) ------------------------------------------------
 .maxEigHsnK <- function(K, N, func = "max") {
   M4.vec2mat <- get("M4.vec2mat", envir = asNamespace("PerformanceAnalytics"), inherits = FALSE)  
@@ -39,10 +37,10 @@
   if (is.vector(K)) K <- M4.vec2mat(K, N)
   K <- abs(K)
   if (func == "max")
-    res <- do.call(pmax, lapply(1:(N^2), function(i) K[, .idx_mask(i, N)])) %>% rowSums() %>% max() %>% multiply_by(12)
+    res <- do.call(pmax, lapply(1:(N^2), function(i) K[, .idx_mask(i, N)]))
   if (func == "sum")
-    res <- Reduce("+", lapply(1:(N^2), function(i) K[, .idx_mask(i, N)])) %>% rowSums() %>% max() %>% multiply_by(12)
-  return(res)
+    res <- Reduce("+", lapply(1:(N^2), function(i) K[, .idx_mask(i, N)]))
+  return(12*max(rowSums(res)))
 }
 
 # pruducing the mask -----------------------------------------------------------------------------------------------------

@@ -9,7 +9,7 @@
 #'                m3(w) >= m3(w0) + delta*d3
 #'                m4(w) <= m4(w0) - delta*d4
 #'                (w-w0)'Sigma(w-w0) <= kappa^2
-#'   subject to   ||w||_1 <= leverage, sum(w) == 1,
+#'   subject to   ||w||_1 <= leverage, sum(w) == 1.
 #' }
 #'
 #' @author Rui Zhou and Daniel P. Palomar
@@ -19,7 +19,7 @@
 #' in \emph{IEEE Transactions on Signal Processing}, vol. 69, pp. 892-904, 2021.
 #' <doi:10.1109/TSP.2021.3051369>.
 #' 
-#' @inheritParams design_MVSK_portfolio
+#' @inheritParams design_MVSK_portfolio_via_sample_moments
 #' @param d Numerical vector of length 4 indicating the weights of first four moments.
 #' @param w0 Numerical vector indicating the reference portfolio vector.
 #' @param w0_moments Numerical vector indicating the reference moments. 
@@ -34,7 +34,7 @@
 #' \item{\code{objfun_vs_iterations}}{Objective function over iterations.}
 #' \item{\code{iterations}}{Iterations index.}
 #' \item{\code{moments}}{Moments of portfolio return at optimal portfolio weights.}
-#' \item{\code{improve}}{The relative improvement of moments of designed portfolio w.r.t. the reference portfolio.}
+#' \item{\code{improvement}}{The relative improvement of moments of designed portfolio w.r.t. the reference portfolio.}
 #'
 #' @examples
 #' 
@@ -42,7 +42,7 @@
 #' data(X50)
 #' 
 #' # estimate moments
-#' X_moments <- estimate_moments(X50[, 1:10])
+#' X_moments <- estimate_sample_moments(X50[, 1:10])
 #' 
 #' # decide problem setting
 #' w0 <- rep(1/10, 10)
@@ -51,8 +51,8 @@
 #' kappa <- 0.3 * sqrt(w0 %*% X_moments$Sgm %*% w0)
 #' 
 #' # portfolio optimization
-#' sol <- design_MVSKtilting_portfolio(d, X_moments, w_init = w0, w0 = w0, 
-#'                                     w0_moments = w0_moments, kappa = kappa)
+#' sol <- design_MVSKtilting_portfolio_via_sample_moments(d, X_moments, w_init = w0, w0 = w0, 
+#'                                                        w0_moments = w0_moments, kappa = kappa)
 #' 
 #' 
 #' @importFrom utils tail
@@ -61,7 +61,7 @@
 #' @import ECOSolveR
 #' @import PerformanceAnalytics
 #' @export
-design_MVSKtilting_portfolio <- function(d = rep(1, 4), X_moments, 
+design_MVSKtilting_portfolio_via_sample_moments <- function(d = rep(1, 4), X_moments, 
                                          w_init = rep(1/length(X_moments$mu), length(X_moments$mu)), 
                                          w0 = w_init, w0_moments = NULL, 
                                          leverage = 1, kappa = 0, method = c("Q-MVSKT", "L-MVSKT"),
@@ -72,6 +72,9 @@ design_MVSKtilting_portfolio <- function(d = rep(1, 4), X_moments,
   derportm4 <- get("derportm4", envir = asNamespace("PerformanceAnalytics"), inherits = FALSE)
   
   # error control
+  # error control
+  if (attr(X_moments, "type") != "X_sample_moments")
+    stop("Argument X_moments is not of type ", dQuote("X_sample_moments"), ". It should be returned from function ", dQuote("estimate_sample_moments()"), ".")
   if (leverage < 1) stop("leverage must be no less than 1.")
   if (leverage != 1) stop("Support for leverage > 1 is coming in next version.")
   
@@ -94,7 +97,8 @@ design_MVSKtilting_portfolio <- function(d = rep(1, 4), X_moments,
   start_time <- proc.time()[3]
   w <- w_init
   delta <- 0
-  if (is.null(w0_moments)) w0_moments <- eval_portfolio_moments(w = w, X_moments = X_moments)
+  if (is.null(w0_moments)) 
+    w0_moments <- eval_portfolio_moments(w = w, X_statistics = X_moments)
   cpu_time <- c(0)
   objs  <- c()
   fun_k <- fun_eval()
@@ -284,7 +288,7 @@ design_MVSKtilting_portfolio <- function(d = rep(1, 4), X_moments,
     "iterations"             = 0:iter,
     "convergence"            = !(iter == maxiter),
     "moments"                = fun_k$w_moments,
-    "improve"                = (fun_k$w_moments - w0_moments) / d * c(1, -1, 1, -1)
+    "improvement"            = (fun_k$w_moments - w0_moments) / d * c(1, -1, 1, -1)
   ))
   
   browser()  # this is necessary to avoid errors with ECOSOlveR package...

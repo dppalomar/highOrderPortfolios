@@ -4,18 +4,20 @@
 \alias{eval_portfolio_moments}
 \title{Evaluate first four moments of a given portfolio}
 \usage{
-eval_portfolio_moments(w, X_moments)
+eval_portfolio_moments(w, X_statistics)
 }
 \arguments{
 \item{w}{Numerical vector with portfolio weights.}
 
-\item{X_moments}{List of moment parameters, as obtained with function \code{\link{estimate_moments}}.}
+\item{var}{Argument characterizing the constituents assets. 
+Either the sample parameters as obtained by function \code{\link{estimate_sample_moments}()} or
+the multivariate skew t parameters as obtained by function \code{\link{estimate_skew_t}()}.}
 }
 \value{
 Four moments of the given portfolio.
 }
 \description{
-Estimate first four moments of a given portfolio's return, namely,
+Evaluate first four moments of a given portfolio's return, namely,
 mean, variance, skewness, and kurtosis.
 }
 \examples{
@@ -23,8 +25,13 @@ mean, variance, skewness, and kurtosis.
 library(highOrderPortfolios)
 data(X50)
 
-X_moments <- estimate_moments(X50[, 1:10])
-w_moments <- eval_portfolio_moments(rep(1/10, 10), X_moments)
+# nonparametric case
+X_moments <- estimate_sample_moments(X50[, 1:10])
+w_moments <- eval_portfolio_moments(w = rep(1/10, 10), X_statistics = X_moments)
+
+# parametric case (based on the multivariate skew t distribution)
+X_skew_t_params <- estimate_skew_t(X50[, 1:10])
+w_moments <- eval_portfolio_moments(w = rep(1/10, 10), X_statistics = X_skew_t_params)
 
 
 }
@@ -32,7 +39,10 @@ w_moments <- eval_portfolio_moments(rep(1/10, 10), X_moments)
 R. Zhou and D. P. Palomar, "Solving High-Order Portfolios via Successive Convex Approximation Algorithms," 
 in \emph{IEEE Transactions on Signal Processing}, vol. 69, pp. 892-904, 2021.
 <doi:10.1109/TSP.2021.3051369>.
+
+X. Wang, R. Zhou, J. Ying, and D. P. Palomar, "Efficient and Scalable High-Order Portfolios Design via Parametric Skew-t Distribution," 
+Available in arXiv, 2022. <https://arxiv.org/pdf/2206.02412v1.pdf>.
 }
 \author{
-Rui Zhou and Daniel P. Palomar
+Rui Zhou, Xiwen Wang, and Daniel P. Palomar
 }

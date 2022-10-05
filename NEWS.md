@@ -1,4 +1,4 @@
-## Changes in portfolioBacktest version 0.0.1.9000 (2022-XX-XX)
+## Changes in portfolioBacktest version 0.0.1.9000 (2022-10-05)
 
 * References revised.
 
