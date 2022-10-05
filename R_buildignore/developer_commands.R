@@ -14,7 +14,6 @@ package?highOrderPortfolios
 ?design_MVSK_portfolio
 citation("highOrderPortfolios")
 vignette(package = "highOrderPortfolios")
-#tools::showNonASCIIfile("R/MVSK.R")
 
 
 ##
@@ -25,6 +24,7 @@ devtools::document()  #to generate all documentation via roxygen
 devtools::install()
 devtools::install(dependencies = FALSE)
 library(highOrderPortfolios)
+#tools::showNonASCIIfile("R/MVSK.R")
 
 
 # Code tests
