@@ -58,41 +58,46 @@ Let's start by loading the package:
 ```{r, echo=TRUE}
 library(highOrderPortfolios)
 
-?design_MVSK_portfolio_via_sample_moments  # to get help for the function
+# get help for the functions
+?design_MVSK_portfolio_via_sample_moments
+?design_MVSK_portfolio_via_skew_t
 ```
 
-The simplest use is for the [mean-variance-skewness-kurtosis (MVSK) portfolio](#mvsk-portfolio):
+The simplest use is for the mean-variance-skewness-kurtosis (MVSK) portfolio:
 
 ```{r, echo=TRUE}
 # load the embedded dataset
 data(X50)
 str(X50)
 
-# estimate moments of multiple assets
-X_moments <- estimate_sample_moments(X50, adjust_magnitude = TRUE)
+# estimate sample moments of multiple assets (non-parametric case)
+X_moments <- estimate_sample_moments(X50)
 
-# decide problem setting
-w0 <- rep(1/50, 50)
-w0_moments <- eval_portfolio_moments(w0, X_moments)
-d <- abs(w0_moments) 
-kappa <- 0.3 * sqrt(w0 %*% X_moments$Sgm %*% w0)
+# estimate the multivariate skew t distribution (parametric case)
+X_skew_t_params <- estimate_skew_t(X50)
+
+# decide moment weights
+xi <- 10
+lmd <- c(1, xi/2, xi*(xi+1)/6, xi*(xi+1)*(xi+2)/24)
 
 # portfolio optimization
-sol <- design_MVSKtilting_portfolio_via_sample_moments(
-  d, X_moments, w_init = w0, w0 = w0, 
-  w0_moments = w0_moments, kappa = kappa, 
-  ftol = 1e-10)
+sol_nonparam <- design_MVSK_portfolio_via_sample_moments(lmd, X_moments)
+sol_param    <- design_MVSK_portfolio_via_skew_t(lmd, X_skew_t_params)
 ```
 
-Let's take a look at the result:
+We can now plot the optimized MVSK portfolio:
 ```{r, echo=TRUE}
-# plot
-require(ggplot2)
+library(ggplot2)
 
-data.frame(idx = 1:ncol(X50), weights = sol$w) |>
+data.frame(idx = 1:ncol(X50), weights = sol_nonparam$w) |>
   ggplot(aes(x = idx, y = weights)) +
   geom_bar(stat = "identity") +
-  labs(x = "asset indexes", y = "portfolio weights")
+  labs(x = "Asset indexes", y = "Portfolio weights")
+
+data.frame(idx = 1:ncol(X50), weights = sol_param$w) |>
+  ggplot(aes(x = idx, y = weights)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Asset indexes", y = "Portfolio weights")
 ```
 
 
@@ -180,7 +185,7 @@ where $\bm{d}=\left[d_{1},d_{2},d_{3},d_{4}\right]\ge\bm{0}$ is the tilting dire
 
 
 
-# Using the Package **highOrderPortfolios**
+# Using the Package `highOrderPortfolios`
 
 ## Estimate the high-order component matrix
 Unlike the mean and covariance matrix, the co-skewness and co-kurtosis matrix are rarely estimated. The base R does not provide an embedded function for estimating them. Therefore, we include the function `estimate_moments()` in this package to help estimate the sample co-skewness and co-kurtosis matrix. A simple code example is presented as follows:

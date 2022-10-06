@@ -1,4 +1,4 @@
-context("Checking moments parameter estimation and calculation")
+context("Checking sample moments parameter estimation and calculation")
 #library(testthat)
 
 data("X50")  # data in the package
@@ -16,10 +16,4 @@ test_that("sample parameter estimation and portfolio moments conincide with the 
   X_moments_adjusted <- estimate_sample_moments(X50, adjust_magnitude = TRUE)
   moments_adjusted <- eval_portfolio_moments(w = rep(1/N, N), X_statistics = X_moments_adjusted)
   expect_equivalent(moments_adjusted, c(1, 1, -1, 1))
-})
-
-
-
-test_that("skew t parameter estimation and portfolio moments conincide with the precomputed ones", {
-  # Xiwen stuff
 })
