@@ -4,7 +4,6 @@ context("Checking high-order portfolio design")
 data("X50")  # data in the package
 N <- ncol(X50)
 
-
 test_that("MVSK portfolio design", {
   X_moments <- estimate_sample_moments(X50)
   xi <- 10
@@ -33,8 +32,6 @@ test_that("MVSK portfolio design", {
   load("sol_MVSK_DC_check.RData")
   expect_equivalent(sol_MVSK[-2], sol_MVSK_check[-2])  
 })
-
-
 
 
 
