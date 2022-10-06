@@ -19,5 +19,5 @@ test_that("skew t parameter estimation via function \"estimate_skew_t()\" and po
   X_moments <- estimate_sample_moments(X50)
   moments_nonparam <- eval_portfolio_moments(w = rep(1/N, N), X_statistics = X_moments) 
   
-  expect_equal(moments_nonparam, moments_param, tolerance = 1e-4)
+  expect_equal(moments_nonparam, moments_param, tolerance = 1e-3)
 })
