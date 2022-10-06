@@ -22,7 +22,6 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.1
-Depends:
 Imports:
     ECOSolveR,
     lpSolveAPI,
@@ -39,8 +38,9 @@ Suggests:
     reshape2,
     rmarkdown,
     R.rsp,
-    testthat
+    testthat (>= 3.0.0)
 VignetteBuilder:
     knitr,
     rmarkdown,
     R.rsp
+Config/testthat/edition: 3
