@@ -1,18 +1,15 @@
 ---
-title: "Fast Design of High Order Portfolios"
+title: "Fast Design of High-Order Portfolios"
 author: |
   | Rui Zhou, Xiwen Wang, and Daniel P. Palomar
   | The Hong Kong University of Science and Technology (HKUST)
 date: "`r Sys.Date()`"
 output:
-  prettydoc::html_pretty:
-    theme: tactile
-    highlight: vignette
+  html_document:
     toc: yes
-    toc_depth: 2
-  pagedown::html_paged:
+    toc_depth: 2    
 csl: apalike.csl # springer-socpsych-author-date.csl
-csl-entry-spacing: 5em  # doesn't work
+csl-entry-spacing: 1.2em
 bibliography: refs.bib
 link-citations: yes
 vignette: >
@@ -39,12 +36,11 @@ opts_chunk$set(
 )
 knit_hooks$set(pngquant = hook_pngquant)  # brew install pngquant
 options(width=100)
-# rmarkdown::render("vignettes/DesignOfHighOrderPortfolios.Rmd", "prettydoc::html_pretty")
+# rmarkdown::render("vignettes/DesignOfHighOrderPortfolios.Rmd")
 ```
 
 -----------
-> This vignette illustrates the design of high order portfolios with the
-  package `highOrderPortfolios`.
+> This vignette illustrates the design of high order portfolios with the package `highOrderPortfolios`.
 
 \newcommand{\bm}[1]{\boldsymbol{#1}}
 \def\T{{\mkern-2mu\raise-1mu\textsf{T}}}
