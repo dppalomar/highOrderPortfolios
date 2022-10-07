@@ -6,7 +6,7 @@
 #### Example
 <!-- Provide a link or minimal code snippet that demonstrates the issue. -->
 ```r
-library(riskParityPortfolio)
+library(highOrderPortfolios)
 # insert code here ...
 ```
 
