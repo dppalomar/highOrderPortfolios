@@ -34,7 +34,6 @@ Imports:
 Suggests:
     knitr,
     ggplot2,
-    prettydoc,
     reshape2,
     rmarkdown,
     R.rsp,

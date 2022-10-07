@@ -38,15 +38,15 @@ heavy tails and skewness. High-order portfolios use higher order moments to
 better characterize the return distribution. Different formulations and fast 
 algorithms are proposed for high-order portfolios based on the mean, variance, 
 skewness, and kurtosis.
-The package is based on the paper [Zhou and Palomar (2020)](https://arxiv.org/abs/2008.00863).
+The package is based on the papers [Zhou and Palomar (2021)](https://arxiv.org/abs/2008.00863)
+and [Wang, Zhou, Ying, and Palomar (2022)](https://arxiv.org/pdf/2206.02412v1.pdf).
 
 
 ## Installation
-The package can be installed from [GitHub](https://github.com/dppalomar/highOrderPortfolios):
-<!---[CRAN](https://CRAN.R-project.org/package=highOrderPortfolios) or---> 
+The package can be installed from [CRAN](https://CRAN.R-project.org/package=highOrderPortfolios) or [GitHub](https://github.com/dppalomar/highOrderPortfolios):
 ```{r, eval=FALSE}
-# install stable version from CRAN (not available yet)
-#install.packages("highOrderPortfolios")
+# install stable version from CRAN
+install.packages("highOrderPortfolios")
 
 # install development version from GitHub
 devtools::install_github("dppalomar/highOrderPortfolios")
@@ -56,7 +56,8 @@ To get help:
 ```{r, eval=FALSE}
 library(highOrderPortfolios)
 help(package = "highOrderPortfolios")
-?design_MVSK_portfolio
+?design_MVSK_portfolio_via_sample_moments
+?design_MVSK_portfolio_via_skew_t
 ```
 
 To cite `highOrderPortfolios` in publications:
@@ -70,40 +71,38 @@ citation("highOrderPortfolios")
 library(highOrderPortfolios)
 data(X50)
 
-# estimate parameters
-X_moments <- estimate_moments(X50, adjust_magnitude = TRUE)
+# non-parametric case: estimate sample moments
+X_moments <- estimate_sample_moments(X50)
 
-# decide problem setting
-w0 <- rep(1/50, 50)
-w0_moments <- eval_portfolio_moments(w0, X_moments)
-d <- abs(w0_moments) 
-kappa <- 0.3 * sqrt(w0%*%X_moments$Sgm%*%w0)
+# parametric case: estimate the multivariate skew t distribution
+X_skew_t_params <- estimate_skew_t(X50)
 
-# portfolio optimization
-sol <- design_MVSKtilting_portfolio(d, X_moments, w_init = w0, w0 = w0, w0_moments = w0_moments, kappa = kappa)
+# choose hyper-parameter moment weights for the MVSK formulation
+xi <- 10
+lmd <- c(1, xi/2, xi*(xi+1)/6, xi*(xi+1)*(xi+2)/24)
+
+# design portfolio
+sol_nonparam <- design_MVSK_portfolio_via_sample_moments(lmd, X_moments)
+sol_param    <- design_MVSK_portfolio_via_skew_t(lmd, X_skew_t_params)
 
 # plot
-plot(sol$cpu_time, sol$objs, "b")
-barplot(sol$w)
+barplot(cbind("via sample moments" = sol_nonparam$w, "via skew t modeling" = sol_param$w), beside = TRUE, 
+        col = c(rep("darkblue", 50), rep("darkred", 50)),
+        main = "MSVK portfolio", xlab = "asset indexes", ylab = "portfolio weights")
 ```
 
 
 
 ## Documentation
 For more detailed information, please check the
-[vignette](https://htmlpreview.github.io/?https://github.com/dppalomar/highOrderPortfolios/blob/master/vignettes/DesignOfHighOrderPortfolios.html).
+[vignette](https://htmlpreview.github.io/?https://github.com/dppalomar/highOrderPortfolios/blob/master/vignettes/DesignOfHighOrderPortfolios.html) and  [vignette](https://CRAN.R-project.org/package=highOrderPortfolios/vignettes/highOrderPortfolios.html).
 
-<!---
-[vignette](https://CRAN.R-project.org/package=highOrderPortfolios/vignettes/highOrderPortfolios.html).
---->
 
 
 ## Links
-Package: [GitHub](https://github.com/dppalomar/highOrderPortfolios).
-<!---[CRAN](https://CRAN.R-project.org/package=highOrderPortfolios) and --->
+Package: [CRAN](https://CRAN.R-project.org/package=highOrderPortfolios) and [GitHub](https://github.com/dppalomar/highOrderPortfolios).
 
 README file: [GitHub-readme](https://github.com/dppalomar/highOrderPortfolios/blob/master/README.md).
 
-Vignette: [GitHub-vignette](https://htmlpreview.github.io/?https://github.com/dppalomar/highOrderPortfolios/blob/master/vignettes/DesignOfHighOrderPortfolios.html).
-<!---[CRAN-vignette](https://CRAN.R-project.org/package=highOrderPortfolios/vignettes/highOrderPortfolios.html).--->
+Vignette: [GitHub-vignette](https://htmlpreview.github.io/?https://github.com/dppalomar/highOrderPortfolios/blob/master/vignettes/DesignOfHighOrderPortfolios.html) and [CRAN-vignette](https://CRAN.R-project.org/package=highOrderPortfolios/vignettes/highOrderPortfolios.html).
 
