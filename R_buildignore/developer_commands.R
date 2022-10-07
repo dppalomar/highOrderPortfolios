@@ -39,7 +39,7 @@ rcmdcheck::rcmdcheck()  # build_args = "--run-donttest"
 devtools::build()
 #devtools::revdep(pkg = "highOrderPortfolios")  # to check reverse dependencies
 #devtools::check_win_release()  #to check under windows
-#R CMD build .  # this is to generate tarball
-#R CMD check highOrderPortfolios_0.0.1.tar.gz --as-cran --run-donttest  # this is before submission to CRAN
-#R CMD install highOrderPortfolios_0.0.1.tar.gz
+#R CMD build . --resave-data  # this is to generate tarball
+#R CMD check highOrderPortfolios_0.0.2.tar.gz --as-cran --run-donttest  # this is before submission to CRAN
+#R CMD install highOrderPortfolios_0.0.2.tar.gz
 #submit the tarball directly via the webform: https://cran.r-project.org/submit.html

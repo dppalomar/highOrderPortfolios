@@ -1,18 +1,21 @@
 Package: highOrderPortfolios
 Title: Design of High-Order Portfolios Including Skewness and Kurtosis
-Version: 0.0.1.9000
-Date: 2022-10-05
+Version: 0.0.2
+Date: 2022-10-07
 Description: The classical Markowitz's mean-variance portfolio formulation ignores 
     heavy tails and skewness. High-order portfolios use higher order moments to
     better characterize the return distribution. Different formulations and fast 
     algorithms are proposed for high-order portfolios based on the mean, variance, 
     skewness, and kurtosis.
-    The package is based on the paper:
-    R. Zhou and Daniel P. Palomar (2020). "Solving High-Order Portfolios via 
+    The package is based on the papers:
+    R. Zhou and D. P. Palomar (2021). "Solving High-Order Portfolios via 
     Successive Convex Approximation Algorithms." <arXiv:2008.00863>.
+    X. Wang, R. Zhou, J. Ying, and D. P. Palomar (2022). "Efficient and Scalable 
+    High-Order Portfolios Design via Parametric Skew-t Distribution." <arXiv:2206.02412>.
 Authors@R: c(
   person(c("Daniel", "P."), "Palomar", role = c("cre", "aut"), email = "daniel.p.palomar@gmail.com"),
-  person("Rui", "Zhou", role = "aut", email = "rzhouae@connect.ust.hk")
+  person("Rui", "Zhou", role = "aut", email = "rzhouae@connect.ust.hk"),
+  person("Xiwen", "Wang", role = "aut", email = "xwangew@connect.ust.hk")
   )
 Maintainer: Daniel P. Palomar <daniel.p.palomar@gmail.com>
 URL: https://github.com/dppalomar/highOrderPortfolios,
@@ -34,7 +37,6 @@ Imports:
 Suggests:
     knitr,
     ggplot2,
-    reshape2,
     rmarkdown,
     R.rsp,
     testthat (>= 3.0.0)

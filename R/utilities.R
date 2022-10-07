@@ -96,7 +96,7 @@ estimate_skew_t <- function(X, initial = NULL, nu_lb = 9, max_iter = 100, ptol =
 #'
 #' @param X Data matrix.
 #' @param adjust_magnitude Boolean indicating whether to adjust the order of magnitude of parameters.
-#'                         Note: this is specially designed for the function \code{\link{design_MVSKtilting_portfolio}()}.
+#'                         Note: this is specially designed for the function \code{\link{design_MVSKtilting_portfolio_via_sample_moments}()}.
 #'                    
 #' @return A list containing the following elements:
 #' \item{\code{mu}}{Mean vector.}
@@ -184,9 +184,9 @@ estimate_sample_moments <- function(X, adjust_magnitude = FALSE) {
 #' Available in arXiv, 2022. <https://arxiv.org/pdf/2206.02412v1.pdf>.
 #'
 #' @param w Numerical vector with portfolio weights.
-#' @param var Argument characterizing the constituents assets. 
-#'            Either the sample parameters as obtained by function \code{\link{estimate_sample_moments}()} or
-#'            the multivariate skew t parameters as obtained by function \code{\link{estimate_skew_t}()}.
+#' @param X_statistics Argument characterizing the constituents assets. 
+#'                     Either the sample parameters as obtained by function \code{\link{estimate_sample_moments}()} or
+#'                     the multivariate skew t parameters as obtained by function \code{\link{estimate_skew_t}()}.
 #' 
 #' @return Four moments of the given portfolio.
 #' 

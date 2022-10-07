@@ -9,7 +9,7 @@ eval_portfolio_moments(w, X_statistics)
 \arguments{
 \item{w}{Numerical vector with portfolio weights.}
 
-\item{var}{Argument characterizing the constituents assets. 
+\item{X_statistics}{Argument characterizing the constituents assets. 
 Either the sample parameters as obtained by function \code{\link{estimate_sample_moments}()} or
 the multivariate skew t parameters as obtained by function \code{\link{estimate_skew_t}()}.}
 }

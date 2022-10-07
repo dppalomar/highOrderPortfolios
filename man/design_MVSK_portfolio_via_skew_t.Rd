@@ -24,7 +24,8 @@ design_MVSK_portfolio_via_skew_t(
 \arguments{
 \item{lambda}{Numerical vector of length 4 indicating the weights of first four moments.}
 
-\item{X_skew_t_params}{List of fitted parameters, including location vector, skewness vector, scatter matrix, and the degree of freedom..}
+\item{X_skew_t_params}{List of fitted parameters, including location vector, skewness vector, scatter matrix, and the degree of freedom,
+see \code{\link{estimate_skew_t}()}.}
 
 \item{w_init}{Numerical vector indicating the initial value of portfolio weights.}
 

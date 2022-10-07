@@ -19,7 +19,7 @@
 #' Available in arXiv, 2022. <https://arxiv.org/pdf/2206.02412v1.pdf>.
 #' 
 #' @param lmd Numerical vector of length 4 indicating the weights of first four moments.
-#' @param X_moments List of moment parameters, see \code{\link{estimate_moments}}.
+#' @param X_moments List of moment parameters, see \code{\link{estimate_sample_moments}()}.
 #' @param w_init Numerical vector indicating the initial value of portfolio weights.
 #' @param leverage Number (>= 1) indicating the leverage of portfolio.
 #' @param method String indicating the algorithm method, must be one of: "Q-MVSK", "MM", "DC".

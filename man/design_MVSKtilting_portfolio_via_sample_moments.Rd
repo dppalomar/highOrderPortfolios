@@ -27,7 +27,7 @@ design_MVSKtilting_portfolio_via_sample_moments(
 \arguments{
 \item{d}{Numerical vector of length 4 indicating the weights of first four moments.}
 
-\item{X_moments}{List of moment parameters, see \code{\link{estimate_moments}}.}
+\item{X_moments}{List of moment parameters, see \code{\link{estimate_sample_moments}()}.}
 
 \item{w_init}{Numerical vector indicating the initial value of portfolio weights.}
 

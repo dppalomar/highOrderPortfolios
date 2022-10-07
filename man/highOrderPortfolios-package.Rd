@@ -13,7 +13,8 @@ skewness, and kurtosis.
 }
 \section{Functions}{
 
-\code{\link{design_MVSK_portfolio}} and \code{\link{design_MVSKtilting_portfolio}}
+\code{\link{design_MVSK_portfolio_via_sample_moments}()}, \code{\link{design_MVSK_portfolio_via_skew_t}()},
+and \code{\link{design_MVSKtilting_portfolio_via_sample_moments}()}
 }
 
 \section{Help}{
@@ -25,8 +26,11 @@ For a quick help see the README file:
 \references{
 R. Zhou and D. P. Palomar, "Solving High-Order Portfolios via Successive Convex Approximation Algorithms," 
 in \emph{IEEE Transactions on Signal Processing}, vol. 69, pp. 892-904, 2021.
-<doi:10.1109/TSP.2021.3051369>.
+<https://doi.org/10.1109/TSP.2021.3051369>.
+
+X. Wang, R. Zhou, J. Ying, and D. P. Palomar, "Efficient and Scalable High-Order Portfolios Design via Parametric Skew-t Distribution," 
+Available in arXiv, 2022. <https://arxiv.org/pdf/2206.02412.pdf>.
 }
 \author{
-Rui Zhou and Daniel P. Palomar
+Rui Zhou, Xiwen Wang, and Daniel P. Palomar
 }

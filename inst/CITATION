@@ -2,15 +2,16 @@ citHeader("To cite 'highOrderPortfolios' in publications, please use:")
 
 citEntry(entry = "Manual",
          title        = "{highOrderPortfolios: Design of High-Order Portfolios via Mean, Variance, Skewness, and Kurtosis}",
-         author       = personList(as.person("Rui ZHOU"),
+         author       = personList(as.person("R. Zhou"),
+                                   as.person("X. Wang"),
                                    as.person("D. P. Palomar")),
-         note         = "R package version 0.0.1",
-         year         = "2020",
+         note         = "R package version 0.0.2",
+         year         = "2022",
          url          = "https://CRAN.R-project.org/package=highOrderPortfolios",
          textVersion  =
-           paste("Rui Zhou and D. P. Palomar (2020).",
+           paste("R. Zhou, X. Wang, and D. P. Palomar (2022).",
                  "highOrderPortfolios: Design of High-Order Portfolios via Mean, Variance, Skewness, and Kurtosis.",
-                 "R package version 0.0.1.",
+                 "R package version 0.0.2.",
                  "https://CRAN.R-project.org/package=highOrderPortfolios")
 )
 
@@ -22,14 +23,14 @@ citEntry(entry = "Article",
          volume       = "69",
          pages        = "892-904",
          year         = "2021",
-         url          = "doi:10.1109/TSP.2021.3051369",
+         url          = "https://doi.org/10.1109/TSP.2021.3051369",
          textVersion  =
            paste("R. Zhou and D. P. Palomar (2021).",
                  "Solving High-Order Portfolios via Successive Convex Approximation Algorithms.",
                  "IEEE Transactions on Signal Processing,",
                  "vol. 69",
                  "pp. 892-904.",
-                 "doi:10.1109/TSP.2021.3051369")
+                 "https://doi.org/10.1109/TSP.2021.3051369")
 )
 
 citEntry(entry = "Article",
@@ -40,10 +41,10 @@ citEntry(entry = "Article",
                                    as.person("Daniel P. Palomar")),
          journal      = "Available in arXiv",
          year         = "2022",
-         url          = "doi:https://arxiv.org/pdf/2206.02412v1.pdf",
+         url          = "https://arxiv.org/pdf/2206.02412.pdf",
          textVersion  =
            paste("X. Wang, R. Zhou, J. Ying, and D. P. Palomar (2022).",
                  "Efficient and Scalable High-Order Portfolios Design via Parametric Skew-t Distribution.",
                  "Available in arXiv,",
-                 "doi:https://arxiv.org/pdf/2206.02412v1.pdf")
+                 "https://arxiv.org/pdf/2206.02412.pdf")
 )

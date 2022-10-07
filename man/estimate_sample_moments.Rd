@@ -10,7 +10,7 @@ estimate_sample_moments(X, adjust_magnitude = FALSE)
 \item{X}{Data matrix.}
 
 \item{adjust_magnitude}{Boolean indicating whether to adjust the order of magnitude of parameters.
-Note: this is specially designed for the function \code{\link{design_MVSKtilting_portfolio}()}.}
+Note: this is specially designed for the function \code{\link{design_MVSKtilting_portfolio_via_sample_moments}()}.}
 }
 \value{
 A list containing the following elements:

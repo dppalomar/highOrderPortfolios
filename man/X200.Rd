@@ -5,7 +5,7 @@
 \alias{X200}
 \title{Synthetic 1000x200 matrix dataset}
 \format{
-An object of class \code{xts} (inherits from \code{zoo}) with 1000 rows and 200 columns.
+An object of class \code{xts} (inherits from \code{zoo}) with 1000 rows and 100 columns.
 }
 \usage{
 data(X200)

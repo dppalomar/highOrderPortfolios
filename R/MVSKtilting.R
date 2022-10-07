@@ -62,11 +62,11 @@
 #' @import PerformanceAnalytics
 #' @export
 design_MVSKtilting_portfolio_via_sample_moments <- function(d = rep(1, 4), X_moments, 
-                                         w_init = rep(1/length(X_moments$mu), length(X_moments$mu)), 
-                                         w0 = w_init, w0_moments = NULL, 
-                                         leverage = 1, kappa = 0, method = c("Q-MVSKT", "L-MVSKT"),
-                                         tau_w = 1e-5, tau_delta = 1e-5, gamma = 1, zeta = 1e-8, maxiter = 1e2, ftol = 1e-5, wtol = 1e-5, 
-                                         theta = 0.5, stopval = -Inf) {
+                                                            w_init = rep(1/length(X_moments$mu), length(X_moments$mu)), 
+                                                            w0 = w_init, w0_moments = NULL, 
+                                                            leverage = 1, kappa = 0, method = c("Q-MVSKT", "L-MVSKT"),
+                                                            tau_w = 1e-5, tau_delta = 1e-5, gamma = 1, zeta = 1e-8, maxiter = 1e2, ftol = 1e-5, wtol = 1e-5, 
+                                                            theta = 0.5, stopval = -Inf) {
   method <- match.arg(method)
   derportm3 <- get("derportm3", envir = asNamespace("PerformanceAnalytics"), inherits = FALSE)
   derportm4 <- get("derportm4", envir = asNamespace("PerformanceAnalytics"), inherits = FALSE)

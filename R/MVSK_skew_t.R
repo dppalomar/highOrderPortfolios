@@ -14,7 +14,8 @@
 #' Available in arXiv, 2022. <https://arxiv.org/pdf/2206.02412.pdf>.
 #'
 #' @param lambda Numerical vector of length 4 indicating the weights of first four moments.
-#' @param X_skew_t_params List of fitted parameters, including location vector, skewness vector, scatter matrix, and the degree of freedom..
+#' @param X_skew_t_params List of fitted parameters, including location vector, skewness vector, scatter matrix, and the degree of freedom,
+#'                        see \code{\link{estimate_skew_t}()}.
 #' @param w_init Numerical vector indicating the initial value of portfolio weights.
 #' @param method String indicating the algorithm method, must be one of: "L-MVSK", "DC", "Q-MVSK", "SQUAREM", "RFPA", "PGD".
 #' @param tau_w Number (>= 0) guaranteeing the strong convexity of approximating function.
