@@ -1,9 +1,15 @@
-test_that("Checking high-order design via parametric approach", {
-  X <- X50[, 1:10]
-  w0 <- rep(1/10, 10)
+context("Checking high order portfolio design via skew t")
+#library(testthat)
+X <- X50[, 1:10]
+w0 <- rep(1/10, 10)
+ 
+test_that("Checking high-order design via parametric approach", { 
   X_parameters <- estimate_skew_t(X)
 
   lambda <- c(1, 4, 10, 20)
+  # w_check <- design_MVSK_portfolio_via_skew_t(lambda, X_parameters, method = "Q-MVSK", maxiter = 10000, ftol = 1e-10, wtol = 1e-10)$w
+  # save(w_check, file = "MVSK_skew_t.RData", version = 2)
+  
   load("MVSK_skew_t.RData")
 
   L_MVSK_result <- design_MVSK_portfolio_via_skew_t(lambda, X_parameters, method = "L-MVSK", maxiter = 10000, ftol = 1e-10, wtol = 1e-10)
