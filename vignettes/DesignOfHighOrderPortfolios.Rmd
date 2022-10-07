@@ -1,7 +1,7 @@
 ---
 title: "Fast Design of High Order Portfolios"
 author: |
-  | Rui Zhou and Daniel P. Palomar
+  | Rui Zhou, Xiwen Wang, and Daniel P. Palomar
   | The Hong Kong University of Science and Technology (HKUST)
 date: "`r Sys.Date()`"
 output:
@@ -12,7 +12,7 @@ output:
     toc_depth: 2
   pagedown::html_paged:
 csl: apalike.csl # springer-socpsych-author-date.csl
-csl-entry-spacing: 2.3em
+csl-entry-spacing: 5em  # doesn't work
 bibliography: refs.bib
 link-citations: yes
 vignette: >
@@ -44,8 +44,7 @@ options(width=100)
 
 -----------
 > This vignette illustrates the design of high order portfolios with the
-  package `highOrderPortfolios`, giving a description of the algorithms and
-  comparing the performance against existing packages.
+  package `highOrderPortfolios`.
 
 \newcommand{\bm}[1]{\boldsymbol{#1}}
 \def\T{{\mkern-2mu\raise-1mu\textsf{T}}}
@@ -58,41 +57,39 @@ Let's start by loading the package:
 ```{r, echo=TRUE}
 library(highOrderPortfolios)
 
-?design_MVSK_portfolio_via_sample_moments  # to get help for the function
+# get help for the functions
+?design_MVSK_portfolio_via_sample_moments
+?design_MVSK_portfolio_via_skew_t
 ```
 
-The simplest use is for the [mean-variance-skewness-kurtosis (MVSK) portfolio](#mvsk-portfolio):
+The simplest use is for the mean-variance-skewness-kurtosis (MVSK) portfolio (using the provided dataset `X50`):
 
 ```{r, echo=TRUE}
-# load the embedded dataset
-data(X50)
-str(X50)
+# non-parametric case: estimate sample moments
+X_moments <- estimate_sample_moments(X50)
 
-# estimate moments of multiple assets
-X_moments <- estimate_sample_moments(X50, adjust_magnitude = TRUE)
+# parametric case: estimate the multivariate skew t distribution
+X_skew_t_params <- estimate_skew_t(X50)
 
-# decide problem setting
-w0 <- rep(1/50, 50)
-w0_moments <- eval_portfolio_moments(w0, X_moments)
-d <- abs(w0_moments) 
-kappa <- 0.3 * sqrt(w0 %*% X_moments$Sgm %*% w0)
+# choose hyper-parameter moment weights for the MVSK formulation
+xi <- 10
+lmd <- c(1, xi/2, xi*(xi+1)/6, xi*(xi+1)*(xi+2)/24)
 
-# portfolio optimization
-sol <- design_MVSKtilting_portfolio_via_sample_moments(
-  d, X_moments, w_init = w0, w0 = w0, 
-  w0_moments = w0_moments, kappa = kappa, 
-  ftol = 1e-10)
+# design portfolio
+sol_nonparam <- design_MVSK_portfolio_via_sample_moments(lmd, X_moments)
+sol_param    <- design_MVSK_portfolio_via_skew_t(lmd, X_skew_t_params)
 ```
 
-Let's take a look at the result:
-```{r, echo=TRUE}
-# plot
-require(ggplot2)
+We can now plot the designed MVSK portfolios (both the non-parametric and parametric cases):
+```{r, echo=TRUE, fig.width=9, fig.height=4, out.width="100%"}
+library(ggplot2)
 
-data.frame(idx = 1:ncol(X50), weights = sol$w) |>
-  ggplot(aes(x = idx, y = weights)) +
-  geom_bar(stat = "identity") +
-  labs(x = "asset indexes", y = "portfolio weights")
+rbind(data.frame(idx = 1:ncol(X50), weights = sol_nonparam$w, type = "via sample moments"),
+      data.frame(idx = 1:ncol(X50), weights = sol_param$w,    type = "via skew t modeling")) |>
+  ggplot(aes(x = idx, y = weights, fill = type)) + 
+  geom_bar(color = "black", stat = "identity", position = "dodge", width = 0.9) +
+  labs(title = "MSVK portfolio", x = "asset indexes", y = "portfolio weights") +
+  theme(legend.title = element_blank())
 ```
 
 
@@ -139,7 +136,7 @@ Generally speaking, a positive skewness usually means the right tail is more hea
 
 
 ## High-order portfolios
-The package `highOrderPortfolios` implements the algorithms designed in the papers [@ZhouPalomar2021] and [@WangZhouYingPalomar2022]. The two problem formulations covered are the mean-variance-skewness-kurtosis (MVSK) portfolio and the mean-variance-skewness-kurtosis tilting (MVSKT) portfolio.
+The package `highOrderPortfolios` implements the algorithms designed in the papers [@ZhouPalomar2021] and [@WangZhouYingPalomar2022]. The two problem formulations covered are the mean-variance-skewness-kurtosis (MVSK) portfolio and the MVSK tilting portfolio.
 
 ### MVSK portfolio
 The simplest formulation for the high-order portfolio is directly extending the Markowitz portfolio objective by considering also the skewness and kurtosis:
@@ -149,7 +146,7 @@ $$
 \textsf{subject to} & \bm{w}\in\mathcal{W},
 \end{array}
 $$
-where $\lambda_{1},\lambda_{2},\lambda_{3},\lambda_{4}\ge0$ are the hyper-parameters for combining four moments of the portfolio returns
+where $\lambda_{1},\lambda_{2},\lambda_{3},\lambda_{4}\ge0$ are the hyper-parameters for combining the four moments of the portfolio returns
 $$
 \begin{aligned}
 \phi_{1}(\bm{w}) &= \bm{w}^\T\bm{\mu}\\
@@ -163,7 +160,7 @@ where $\bm{\Phi} \in \mathbb{R}^{N \times N^2}$ is the co-skewness matrix, and $
 
 
 ### MVSK tilting portfolio
-Another formulation for the high-order portfolio is obtained by moving the high-order consideration into constraints; for example, the MVSK tilting portfolio [@boudt2020mvskt]:
+Another formulation for the high-order portfolio is obtained by moving the high-order moments in the objective down to the constraints; for example, the MVSK tilting portfolio [@boudt2020mvskt]:
 $$
 \begin{array}{ll}
 \underset{\bm{w},\delta}{\textsf{maximize}} &  \delta\\
@@ -180,73 +177,88 @@ where $\bm{d}=\left[d_{1},d_{2},d_{3},d_{4}\right]\ge\bm{0}$ is the tilting dire
 
 
 
-# Using the Package **highOrderPortfolios**
+# Using the Package `highOrderPortfolios`
 
-## Estimate the high-order component matrix
-Unlike the mean and covariance matrix, the co-skewness and co-kurtosis matrix are rarely estimated. The base R does not provide an embedded function for estimating them. Therefore, we include the function `estimate_moments()` in this package to help estimate the sample co-skewness and co-kurtosis matrix. A simple code example is presented as follows:
+## Estimate the high-order sample moments
+Unlike the mean and covariance matrix, the co-skewness and co-kurtosis matrix are rarely estimated. The base R does not provide an embedded function for estimating them. Therefore, we include the function `estimate_sample_moments()` in this package (which in turn relies on the package [`PerformanceAnalytics`](https://cran.r-project.org/package=PerformanceAnalytics)) to help estimate the sample co-skewness and co-kurtosis matrices:
 ```{r, echo=TRUE}
 library(highOrderPortfolios)
 
-# load the embedded dataset
-data(X50)
-
-# estimate moments
+# non-parametric case: estimate sample moments
 X_moments <- estimate_sample_moments(X50)
 names(X_moments)
+
 ```
+
+## Fit a multivariate skew $t$ distribution
+As a more time-efficient alternative, we can use a parametric approach by fitting the data matrix to a multivariate skew $t$ distribution with the function `estimate_skew_t()` (which in turn relies on the package [`fitHeavyTail`](https://cran.r-project.org/package=fitHeavyTail)):
+```{r, echo=TRUE}
+# parametric case: estimate the multivariate skew t distribution
+X_skew_t_params <- estimate_skew_t(X50)
+names(X_skew_t_params)
+```
+
 
 
 ## MVSK portfolio
-A simple code example for solving the [MVSK portfolio](#mvsk-portfolio) is presented as follows:
-
+To design the [MVSK portfolio](#mvsk-portfolio), first we need to choose the value of the hyper-parameters that weight each of the four moments:
 ```{r, echo=TRUE}
-# decide moment weights
+# choose hyper-parameter moment weights for the MVSK formulation
 xi <- 10
 lmd <- c(1, xi/2, xi*(xi+1)/6, xi*(xi+1)*(xi+2)/24)
-
-# portfolio optimization
-sol <- design_MVSK_portfolio_via_sample_moments(lmd, X_moments)
 ```
 
-Check the optimized MVSK portfolio:
-
+Then we can design the MVSK portfolio via the non-parametric sample moments:
 ```{r, echo=TRUE}
-data.frame(idx = 1:ncol(X50), weights = sol$w) |>
-  ggplot(aes(x = idx, y = weights)) +
-  geom_bar(stat = "identity") +
-  labs(x = "Asset indexes", y = "Portfolio weights")
+sol_nonparam <- design_MVSK_portfolio_via_sample_moments(lmd, X_moments)
 ```
+or via the parametric skew $t$ modeling:
+```{r, echo=TRUE}
+sol_param    <- design_MVSK_portfolio_via_skew_t(lmd, X_skew_t_params)
+```
+
+
+We can now plot the designed MVSK portfolios (both the non-parametric and parametric cases):
+```{r, echo=TRUE, fig.width=9, fig.height=4, out.width="100%"}
+library(ggplot2)
+
+rbind(data.frame(idx = 1:ncol(X50), weights = sol_nonparam$w, type = "via sample moments"),
+      data.frame(idx = 1:ncol(X50), weights = sol_param$w,    type = "via skew t modeling")) |>
+  ggplot(aes(x = idx, y = weights, fill = type)) + 
+  geom_bar(color = "black", stat = "identity", position = "dodge", width = 0.9) +
+  labs(title = "MSVK portfolio", x = "asset indexes", y = "portfolio weights") +
+  theme(legend.title = element_blank())
+```
+
+
+
 
 
 ## MVSK tilting portfolio
-A simple code example for solving the [MVSK tilting portfolio](#mvsk-tilting-portfolio) is presented as follows:
-
+Similarly, the [MVSK tilting portfolio](#mvsk-tilting-portfolio) can be designed based on the non-parametric sample moments:
 ```{r, echo=TRUE}
-# estimate moments
+# estimate sample moments
 X_moments <- estimate_sample_moments(X50, adjust_magnitude = TRUE)
 
-# decide problem setting
+# choose hyper-parameters in the problem setting
 w0 <- rep(1/50, 50)
 w0_moments <- eval_portfolio_moments(w0, X_moments)
 d <- abs(w0_moments) 
 kappa <- 0.3 * sqrt(w0 %*% X_moments$Sgm %*% w0)
 
-# portfolio optimization
-sol <- design_MVSKtilting_portfolio_via_sample_moments(
-  d, X_moments, w_init = w0, w0 = w0, 
-  w0_moments = w0_moments, kappa = kappa)
+# portfolio design
+sol_nonparam <- design_MVSKtilting_portfolio_via_sample_moments(d, X_moments, w_init = w0, w0 = w0, w0_moments = w0_moments, kappa = kappa)
 ```
 
-Check the optimized MVSK tilting portfolio:
-
-```{r, echo=TRUE}
-sol$improvement  # the improvement of moments of the designed portfolio
-
-data.frame(idx = 1:ncol(X50), weights = sol$w) |>
-  ggplot(aes(x = idx, y = weights)) +
-  geom_bar(stat = "identity") +
-  labs(x = "Asset indexes", y = "Portfolio weights")
+We can now plot the designed MVSK tilting portfolio:
+```{r, echo=TRUE, fig.width=9, fig.height=4, out.width="100%"}
+rbind(data.frame(idx = 1:ncol(X50), weights = sol_nonparam$w)) |>
+  ggplot(aes(x = idx, y = weights)) + 
+  geom_bar(stat = "identity", position = "dodge", width = 0.9) +
+  labs(title = "MSVK tilting portfolio", x = "asset indexes", y = "portfolio weights") +
+  theme(legend.title = element_blank())
 ```
+
 
 
 # References {-}

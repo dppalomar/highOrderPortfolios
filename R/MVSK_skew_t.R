@@ -4,7 +4,7 @@
 #' \preformatted{
 #'   minimize     - lambda1*phi1(w) + lambda2*phi2(w)
 #'                - lambda3*phi3(w) + lambda4*phi4(w)
-#'   subject to   w>=0, sum(w) == 1,
+#'   subject to   w>=0, sum(w) == 1.
 #' }
 #'
 #' @author Xiwen Wang, Rui Zhou and Daniel P. Palomar
@@ -40,22 +40,27 @@
 #' library(highOrderPortfolios)
 #' data(X50)
 #'
+#' # estimate skew t distribution
 #' X_skew_t_params <- estimate_skew_t(X50)
+#' 
 #' # decide moment weights
 #' xi <- 10
 #' lambda <- c(1, 4, 10, 20)
-#' MVSK_portfolio <- design_MVSK_portfolio_via_skew_t(lambda, X_skew_t_params, method = "RFPA", tau = 10)
+#' 
+#' # portfolio optimization
+#' sol <- design_MVSK_portfolio_via_skew_t(lambda, X_skew_t_params, method = "RFPA", tau = 10)
 #'
 #' @importFrom utils tail
 #' @import quadprog
 #' @export
 design_MVSK_portfolio_via_skew_t <- function(lambda, X_skew_t_params,
-                              w_init = rep(1/length(X_skew_t_params$mu), length(X_skew_t_params$mu)),
-                              method = c("L-MVSK", "DC", "Q-MVSK", "SQUAREM", "RFPA", "PGD"), gamma = 1, zeta = 1e-8,
-                              tau_w = 0, beta = 0.5, tau = 1e5, initial_eta = 5, maxiter = 1e3, ftol = 1e-6, wtol = 1e-6, stopval = -Inf)  {
-  if (attr(X_skew_t_params, "type") == "X_skew_t_params") {
-    stop("Unknown type of argument ", dQuote(X_skew_t_params), " : it should be returned from ", dQuote("estimate_skew_t()"))
-  }
+                                             w_init = rep(1/length(X_skew_t_params$mu), length(X_skew_t_params$mu)),
+                                             method = c("L-MVSK", "DC", "Q-MVSK", "SQUAREM", "RFPA", "PGD"), gamma = 1, zeta = 1e-8,
+                                             tau_w = 0, beta = 0.5, tau = 1e5, initial_eta = 5, maxiter = 1e3, ftol = 1e-6, wtol = 1e-6, stopval = -Inf)  {
+  # error control
+  if (attr(X_skew_t_params, "type") != "X_skew_t_params")
+    stop("Unknown type of argument ", dQuote("X_skew_t_params"), " : it should be returned from ", dQuote("estimate_skew_t()"))
+
   # re-format the lambda
   lambda_max <- max(lambda)
   lambda <- lambda/lambda_max

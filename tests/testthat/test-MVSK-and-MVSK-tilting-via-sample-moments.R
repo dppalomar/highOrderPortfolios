@@ -1,6 +1,4 @@
-context("Checking high-order portfolio design")
 #library(testthat)
-
 data("X50")  # data in the package
 N <- ncol(X50)
 
@@ -14,7 +12,7 @@ test_that("MVSK portfolio design", {
   # save(sol_MVSK_check, file = "sol_MVSK_QMVSK_check.RData", version = 2)
   sol_MVSK <- design_MVSK_portfolio_via_sample_moments(lmd = lmd, X_moments = X_moments)
   load("sol_MVSK_QMVSK_check.RData")
-  expect_equivalent(sol_MVSK[-2], sol_MVSK_check[-2])
+  expect_equal(sol_MVSK[-2], sol_MVSK_check[-2])
   
 
   # Method "MM"
@@ -22,7 +20,7 @@ test_that("MVSK portfolio design", {
   # save(sol_MVSK_check, file = "sol_MVSK_MM_check.RData", version = 2)
   sol_MVSK <- design_MVSK_portfolio_via_sample_moments(lmd = lmd, X_moments = X_moments, method = "MM")
   load("sol_MVSK_MM_check.RData")
-  expect_equivalent(sol_MVSK[-2], sol_MVSK_check[-2])
+  expect_equal(sol_MVSK[-2], sol_MVSK_check[-2])
   
   
   # Method "DC"
@@ -30,7 +28,7 @@ test_that("MVSK portfolio design", {
   # save(sol_MVSK_check, file = "sol_MVSK_DC_check.RData", version = 2)
   sol_MVSK <- design_MVSK_portfolio_via_sample_moments(lmd = lmd, X_moments = X_moments, method = "DC")
   load("sol_MVSK_DC_check.RData")
-  expect_equivalent(sol_MVSK[-2], sol_MVSK_check[-2])  
+  expect_equal(sol_MVSK[-2], sol_MVSK_check[-2])  
 })
 
 
@@ -48,7 +46,7 @@ test_that("MVSK tilting portfolio design", {
   # save(sol_tilting_check, file = "sol_MVSKtilting_LMVSKT_check.RData", version = 2)
   sol_tilting <- design_MVSKtilting_portfolio_via_sample_moments(method = "L-MVSKT", d = d, X_moments = X_moments, w_init = w0, w0 = w0, w0_moments = w0_moments, kappa = kappa)
   load("sol_MVSKtilting_LMVSKT_check.RData")
-  expect_equivalent(sol_tilting[-3], sol_tilting_check[-3])
+  expect_equal(sol_tilting[-3], sol_tilting_check[-3])
 
   
   # Method "Q-MVSKT"
@@ -56,5 +54,5 @@ test_that("MVSK tilting portfolio design", {
   # save(sol_tilting_check, file = "sol_MVSKtilting_QMVSKT_check.RData", version = 2)
   sol_tilting <- design_MVSKtilting_portfolio_via_sample_moments(method = "Q-MVSKT", d = d, X_moments = X_moments, w_init = w0, w0 = w0, w0_moments = w0_moments, kappa = kappa)
   load("sol_MVSKtilting_QMVSKT_check.RData")
-  expect_equivalent(sol_tilting[-3], sol_tilting_check[-3])
+  expect_equal(sol_tilting[-3], sol_tilting_check[-3])
 })

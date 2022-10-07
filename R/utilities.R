@@ -4,7 +4,7 @@
 #' location vector (mu), skewness vector (gamma), scatter matrix (scatter), degree of freedom (nu), parameters a,
 #' and the Cholesky decomposition of the scatter matrix (chol_Sigma).
 #'
-#' @author Xiwen Wang, Rui Zhou and Daniel P. Palomar
+#' @author Xiwen Wang, Rui Zhou, and Daniel P. Palomar
 #'
 #' @references
 #' Aas, Kjersti and Ingrid Hobæk Haff. "The generalized hyperbolic skew student’st-distribution,"
