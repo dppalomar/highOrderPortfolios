@@ -63,7 +63,6 @@ Design high-order portfolio based on weighted linear combination of first four m
 }
 }
 \examples{
-
 library(highOrderPortfolios)
 data(X50)
 
@@ -76,7 +75,6 @@ lmd <- c(1, xi/2, xi*(xi+1)/6, xi*(xi+1)*(xi+2)/24)
 
 # portfolio optimization
 sol <- design_MVSK_portfolio_via_sample_moments(lmd, X_moments)
-
 
 }
 \references{

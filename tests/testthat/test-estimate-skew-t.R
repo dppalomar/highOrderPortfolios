@@ -1,6 +1,4 @@
-context("Checking sample moments parameter estimation and calculation")
 #library(testthat)
-
 data("X50")  # data in the package
 N <- ncol(X50)
  

@@ -1,4 +1,3 @@
-context("Checking high order portfolio design via skew t")
 #library(testthat)
 X <- X50[, 1:10]
 w0 <- rep(1/10, 10)

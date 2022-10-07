@@ -72,5 +72,5 @@ Aas, Kjersti and Ingrid Hobæk Haff. "The generalized hyperbolic skew student’
 Journal of financial econometrics, pp. 275-309, 2006.
 }
 \author{
-Xiwen Wang, Rui Zhou and Daniel P. Palomar
+Xiwen Wang, Rui Zhou, and Daniel P. Palomar
 }

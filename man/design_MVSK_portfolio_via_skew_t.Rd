@@ -64,18 +64,22 @@ Design MVSK portfolio without shorting based on the parameters of generalized hy
 \preformatted{
   minimize     - lambda1*phi1(w) + lambda2*phi2(w)
                - lambda3*phi3(w) + lambda4*phi4(w)
-  subject to   w>=0, sum(w) == 1,
+  subject to   w>=0, sum(w) == 1.
 }
 }
 \examples{
 library(highOrderPortfolios)
 data(X50)
 
+# estimate skew t distribution
 X_skew_t_params <- estimate_skew_t(X50)
+
 # decide moment weights
 xi <- 10
 lambda <- c(1, 4, 10, 20)
-MVSK_portfolio <- design_MVSK_portfolio_via_skew_t(lambda, X_skew_t_params, method = "RFPA", tau = 10)
+
+# portfolio optimization
+sol <- design_MVSK_portfolio_via_skew_t(lambda, X_skew_t_params, method = "RFPA", tau = 10)
 
 }
 \references{
