@@ -87,7 +87,7 @@ library(ggplot2)
 rbind(data.frame(idx = 1:ncol(X50), weights = sol_nonparam$w, type = "via sample moments"),
       data.frame(idx = 1:ncol(X50), weights = sol_param$w,    type = "via skew t modeling")) |>
   ggplot(aes(x = idx, y = weights, fill = type)) + 
-  geom_bar(color = "black", stat = "identity", position = "dodge", width = 0.8) +
+  geom_bar(color = "black", stat = "identity", position = "dodge", width = 0.9) +
   labs(title = "MSVK portfolio", x = "asset indexes", y = "portfolio weights") +
   theme(legend.title = element_blank())
 ```
@@ -225,7 +225,7 @@ library(ggplot2)
 rbind(data.frame(idx = 1:ncol(X50), weights = sol_nonparam$w, type = "via sample moments"),
       data.frame(idx = 1:ncol(X50), weights = sol_param$w,    type = "via skew t modeling")) |>
   ggplot(aes(x = idx, y = weights, fill = type)) + 
-  geom_bar(color = "black", stat = "identity", position = "dodge", width = 0.8) +
+  geom_bar(color = "black", stat = "identity", position = "dodge", width = 0.9) +
   labs(title = "MSVK portfolio", x = "asset indexes", y = "portfolio weights") +
   theme(legend.title = element_blank())
 ```
@@ -249,19 +249,12 @@ kappa <- 0.3 * sqrt(w0 %*% X_moments$Sgm %*% w0)
 # portfolio design
 sol_nonparam <- design_MVSKtilting_portfolio_via_sample_moments(d, X_moments, w_init = w0, w0 = w0, w0_moments = w0_moments, kappa = kappa)
 ```
-or based on the parametric skew $t$ modeling:
-```{r, echo=TRUE}
-#TODO: Xiwen
-```
 
-We can now plot the designed MVSK tilting portfolios (both the non-parametric and parametric cases):
+We can now plot the designed MVSK tilting portfolio:
 ```{r, echo=TRUE, fig.width=9, fig.height=4, out.width="100%"}
-library(ggplot2)
-
-rbind(data.frame(idx = 1:ncol(X50), weights = sol_nonparam$w, type = "via sample moments"),
-      data.frame(idx = 1:ncol(X50), weights = sol_param$w,    type = "via skew t modeling")) |>
-  ggplot(aes(x = idx, y = weights, fill = type)) + 
-  geom_bar(color = "black", stat = "identity", position = "dodge", width = 0.8) +
+rbind(data.frame(idx = 1:ncol(X50), weights = sol_nonparam$w)) |>
+  ggplot(aes(x = idx, y = weights)) + 
+  geom_bar(stat = "identity", position = "dodge", width = 0.9) +
   labs(title = "MSVK tilting portfolio", x = "asset indexes", y = "portfolio weights") +
   theme(legend.title = element_blank())
 ```
