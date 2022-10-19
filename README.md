@@ -1,9 +1,4 @@
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
-
-
-
 
 # highOrderPortfolios
 <!---
@@ -74,20 +69,23 @@ barplot(cbind("via sample moments" = sol_nonparam$w, "via skew t modeling" = sol
         main = "MSVK portfolio", xlab = "asset indexes", ylab = "portfolio weights")
 ```
 
-<img src="man/figures/README-unnamed-chunk-5-1.png" width="75%" style="display: block; margin: auto;" />
+<img src="man/figures/README-unnamed-chunk-5-1.png" width="70%" style="display: block; margin: auto;" />
 
 
 
 ## Documentation
-For more detailed information, please check the
-[vignette](https://htmlpreview.github.io/?https://github.com/dppalomar/highOrderPortfolios/blob/master/vignettes/DesignOfHighOrderPortfolios.html) and  [vignette](https://CRAN.R-project.org/package=highOrderPortfolios/vignettes/highOrderPortfolios.html).
+For more detailed information, please check the vignette:
+[CRAN-vignette](https://CRAN.R-project.org/package=highOrderPortfolios/vignettes/DesignOfHighOrderPortfolios.html) and [GitHub-vignette](https://htmlpreview.github.io/?https://github.com/dppalomar/highOrderPortfolios/blob/master/vignettes/DesignOfHighOrderPortfolios.html).
 
 
 
 ## Links
 Package: [CRAN](https://CRAN.R-project.org/package=highOrderPortfolios) and [GitHub](https://github.com/dppalomar/highOrderPortfolios).
 
-README file: [GitHub-readme](https://github.com/dppalomar/highOrderPortfolios/blob/master/README.md).
+README file: [CRAN-readme](https://CRAN.R-project.org/package=highOrderPortfolios/readme/README.html) and [GitHub-readme](https://github.com/dppalomar/highOrderPortfolios/blob/master/README.md).
 
-Vignette: [GitHub-vignette](https://htmlpreview.github.io/?https://github.com/dppalomar/highOrderPortfolios/blob/master/vignettes/DesignOfHighOrderPortfolios.html) and [CRAN-vignette](https://CRAN.R-project.org/package=highOrderPortfolios/vignettes/highOrderPortfolios.html).
+Vignette: [CRAN-vignette](https://CRAN.R-project.org/package=highOrderPortfolios/vignettes/DesignOfHighOrderPortfolios.html) and [GitHub-vignette](https://htmlpreview.github.io/?https://github.com/dppalomar/highOrderPortfolios/blob/master/vignettes/DesignOfHighOrderPortfolios.html).
+
+
+
 

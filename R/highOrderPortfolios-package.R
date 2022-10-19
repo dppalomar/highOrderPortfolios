@@ -13,10 +13,13 @@
 #'
 #' @section Help:
 #' For a quick help see the README file:
+#' \href{https://CRAN.R-project.org/package=highOrderPortfolios/readme/README.html}{CRAN-README} and
 #' \href{https://github.com/dppalomar/highOrderPortfolios/blob/master/README.md}{GitHub-README}.
+#' 
 #'
-# For more details see the vignette:
-# \href{https://CRAN.R-project.org/package=highOrderPortfolios/vignettes/highOrderPortfolios.html}{CRAN-vignette}.
+#' For more details see the vignette:
+#' \href{https://CRAN.R-project.org/package=highOrderPortfolios/vignettes/DesignOfHighOrderPortfolios.html}{CRAN-vignette} and
+#' \href{https://htmlpreview.github.io/?https://github.com/dppalomar/highOrderPortfolios/blob/master/vignettes/DesignOfHighOrderPortfolios.html}{GitHub-vignette}.
 #'
 #' @author Rui Zhou, Xiwen Wang, and Daniel P. Palomar
 #'
