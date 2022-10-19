@@ -1,6 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^cran-comments\.md$
+.github
 ^LICENSE$
 ^README\.Rmd$
 ^README\.html$
