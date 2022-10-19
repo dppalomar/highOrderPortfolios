@@ -49,15 +49,19 @@
 #' @export
 estimate_skew_t <- function(X, initial = NULL, nu_lb = 9, max_iter = 100, ptol = 1e-3, ftol = Inf,
                             PXEM = TRUE, return_iterates = FALSE, verbose = FALSE) { 
+  # set lower bound for nu
+  old_options <- options()
+  on.exit(options(old_options))
   options(nu_min = nu_lb)
+  # fit distribution
   X_skew_t_params <- fitHeavyTail::fit_mvst(X, max_iter = max_iter, ptol = ptol, ftol = ftol,
                                             PXEM = PXEM, return_iterates = return_iterates, verbose = verbose)
-  return_paramters <- list()
-  return_paramters$mu    <- X_skew_t_params$mu
-  return_paramters$nu    <- X_skew_t_params$nu
-  return_paramters$gamma <- X_skew_t_params$gamma
-  return_paramters$scatter <- X_skew_t_params$scatter
-  return_paramters$chol_Sigma <- chol(return_paramters$scatter)
+  return_parameters <- list()
+  return_parameters$mu         <- X_skew_t_params$mu
+  return_parameters$nu         <- X_skew_t_params$nu
+  return_parameters$gamma      <- X_skew_t_params$gamma
+  return_parameters$scatter    <- X_skew_t_params$scatter
+  return_parameters$chol_Sigma <- chol(return_parameters$scatter)
   
   ## Compute a given paramters of skew-t model
   compute_a <- function(X_skew_t_params) {
@@ -74,9 +78,9 @@ estimate_skew_t <- function(X, initial = NULL, nu_lb = 9, max_iter = 100, ptol =
                 "a41" = a41, "a42" = a42, "a43" = a43))
   }
   
-  return_paramters$a <- compute_a(return_paramters)
-  attr(return_paramters, "type") <- "X_skew_t_params"
-  return(return_paramters)
+  return_parameters$a <- compute_a(return_parameters)
+  attr(return_parameters, "type") <- "X_skew_t_params"
+  return(return_parameters)
 }
 
 
