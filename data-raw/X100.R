@@ -11,4 +11,4 @@ data_matrix <- data_matrix[ , sample(ncol(data_matrix), N)]
 
 X100 <- data_matrix[1:500, ]
 
-save(X100, file = "data/X100.RData", version = 2)
+save(X100, file = "data/X100.RData", compress = "xz")

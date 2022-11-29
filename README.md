@@ -1,11 +1,16 @@
 
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+
+
+
 
 # highOrderPortfolios
-<!---
+
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/highOrderPortfolios)](https://CRAN.R-project.org/package=highOrderPortfolios)
 [![CRAN Downloads](https://cranlogs.r-pkg.org/badges/highOrderPortfolios)](https://CRAN.R-project.org/package=highOrderPortfolios)
 [![CRAN Downloads Total](https://cranlogs.r-pkg.org/badges/grand-total/highOrderPortfolios?color=brightgreen)](https://CRAN.R-project.org/package=highOrderPortfolios)
---->
+
 
 The classical Markowitz's mean-variance portfolio formulation ignores 
 heavy tails and skewness. High-order portfolios use higher order moments to
